@@ -215,12 +215,13 @@ if (GLOBAL.TemplatedForm == null) {
             this.mappingData(this.domTpl, dataArg);
     };
 
-    // @param target - the container id or element.
+    // @param container - the container id or element.
     // @param tplConstructor - the template object or construction function.
     // [@param tplArgs] - the args for constructing the template, ignore if
     //                    tplConstructor is object.
     // [@param fieldNameAlias] - for naming an alias of 'fieldName' attribute.
-    var Template = function(target, tplConstructor, tplArgs, fieldNameAlias) {
+    var Template = function(container, tplConstructor, tplArgs, fieldNameAlias)
+    {
         if (tplConstructor.call) {
             this.tplObj = {};
             tplConstructor.call(this.tplObj, tplArgs);
@@ -234,7 +235,7 @@ if (GLOBAL.TemplatedForm == null) {
         );
         this.forms = new Array(fieldNameAlias.length);
         for (var i = 0; i < fieldNameAlias.length; ++i)
-            this.forms[i] = new Form(target, null, fieldNameAlias[i]);
+            this.forms[i] = new Form(container, null, fieldNameAlias[i]);
     };
 
     // @param reset - indicates if clear the innerHTML of the container.
@@ -297,11 +298,18 @@ if (GLOBAL.TemplatedForm == null) {
         }, "src", container);
     };
 
-    /**
-     * @param {Array} options 详见:"/holoEdu/design/layoutDef.js"
-     * @param {DOMObj} container 
-     */
-    TemplatedForm.layout = function (options, container) {
+    // @param layoutDef - definitions of layout: {
+    //    moduleName: String, // the module name or callback of function(thisDom).
+    //    trigger: String,    // the trigger event name, such as onload/onclick/...
+    //    cssFile: String,    // optional，dynamic load css file.
+    //    jsFile: String,     // optional，dynamic load js file.
+    //    id: String,         // optional，the id of target div.
+    //    className: String,  // optional，the class of target div.
+    //    style: String,      // optional，the style of target div.
+    //    text:String         // optional，the text of target div.
+    // }
+    // @param container - the container id or element.
+    TemplatedForm.layout = function(layoutDef, container) {
         var self = this;
         var tplForm = new TemplatedForm.Template(container, {
             div: {$:{
@@ -362,7 +370,7 @@ if (GLOBAL.TemplatedForm == null) {
                     setTimeout(domDiv.invokeModule); // to avoid dead-loop.
             }
         };
-        tplForm.forms[0].formData(options);
+        tplForm.forms[0].formData(layoutDef);
     };
 
     TemplatedForm.Template = Template;
