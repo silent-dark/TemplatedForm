@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+<div>
+    <div id="tplFormDemo"></div>
+</div>
+</body>
+<script type="text/javascript" src="../templatedForm.js"></script>
+<script type="text/javascript">
+    // 演示JS模板：
+    var tpl = {
+        a: { $: {
+            // 演示数据字段的绑定声明
+            fieldName: "contact.email:function;color:style.color;name",
+            // 演示事件中访问自定义属性
+            onclick: function() {
+                console.log( 'my email: ' + this.getAttribute('email') );
+            },
+            style: "color:black",
+            email: "@",
+            href: "#",
+            text: "名字"
+        } },
+        // 演示模板中需要重复的元素
+        input: [{ $: {
+            fieldMap: "contact.city",
+            type: "text",
+            value: "城市"
+        } }, { $: {
+            fieldMap: "contact.phone",
+            type: "text",
+            value: "电话"
+        } }]
+    };
+    var tplFormDemo = new TemplatedForm.Template(
+        "tplFormDemo", tpl,
+        ["fieldName", "fieldMap"] // 演示数据字段申明的别名
+    );
+    tplFormDemo.init();
+    // 演示数据字段与自定义属性绑定：
+    tplFormDemo.forms[0].valAttrEvals["contact.email"] = function(attrVal) {
+        if (attrVal) {
+            // set:
+            this.setAttribute("email", attrVal);
+        } else {
+            // get:
+            return this.getAttribute("email");
+        }
+    };
+    // 演示动态事件绑定：
+    tplFormDemo.forms[1].valAttrEvals["contact.city"] = function(attrVal) {
+        if (attrVal) {
+            // set:
+            this.value = attrVal;
+            this.onmouseover = function() {
+                console.log("mouse over " + attrVal);
+            };
+        } else {
+            // get:
+            return this.value;
+        }
+    };
+    // 演示数组数据渲染回调：
+    tplFormDemo.forms[0].onAddDomItem = function(dataObj, dataIdx) {
+        console.log( "onAddDomItem(" + dataIdx + "):" + JSON.stringify(dataObj) );
+        // 演示回调中获得对应DOM对象：
+        tplFormDemo.forms[1].domTpl = this.domItems[dataIdx];
+        // 演示DOM对象作为模板参数并动态渲染：
+        tplFormDemo.forms[1].formData(dataObj);
+    };
+    // 演示模板数据提取：
+    console.log( tplFormDemo.forms[0].formData() );
+    console.log( tplFormDemo.forms[1].formData() );
+    // 演示模板数据渲染：
+    var data = [{
+        name: "小红",
+        contact: {
+            city: "上海",
+            email: "red@test.cn"
+        },
+        color: "red"
+    }, {
+        name: "小绿",
+        contact: {
+            city: "北京",
+            email: "green@test.cn"
+        },
+        color: "green"
+    }];
+    tplFormDemo.forms[0].formData(data);
+    // 演示（数组）数据渲染后再次提取：
+    var allData = new Array(tplFormDemo.forms[0].domItems.length);
+    for (var i = 0; i < allData.length; ++i) {
+        allData[i] = tplFormDemo.forms[0].formData(i);
+        tplFormDemo.forms[1].domTpl = tplFormDemo.forms[0].domItems[i];
+        Object.assign( allData[i].contact, tplFormDemo.forms[1].formData().contact );
+    }
+    console.log(allData);
+</script>
+</html>

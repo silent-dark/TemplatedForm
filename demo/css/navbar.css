@@ -1,0 +1,6 @@
+#navbar {
+  height: calc(100% - 64px);
+  width: 160px;
+  border: 1px solid blue;
+  float: left;
+}

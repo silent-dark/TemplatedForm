@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>TemplatedForm.layout demo</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+</body>
+<script src="../templatedForm.js"></script>
+<script>
+var topLayout = [{
+    moduleName: "headerInit",
+    jsFile: "js/header.js",
+    cssFile: "css/header.css",
+    id: "header",
+    className:"test1 test2",
+    text: "页眉区"
+},{
+    moduleName: function(thisDom) {
+        var navBarLayout = [{
+            moduleName: "homeView",
+            trigger: "onclick",
+            style: "cursor:pointer",
+            text: "主页"
+        },{
+            moduleName: "classesView",
+            trigger: "onclick",
+            style: "cursor:pointer",
+            text: "班级管理"
+        },{
+            moduleName: "coursesView",
+            trigger: "onclick",
+            style: "cursor:pointer",
+            text: "课程管理"
+        },{
+            moduleName: "historyView",
+            trigger: "onclick",
+            style: "cursor:pointer",
+            text: "历史管理"
+        },{
+            moduleName: "devicesView",
+            trigger: "onclick",
+            style: "cursor:pointer",
+            text: "设备管理"
+        }];
+        TemplatedForm.layout(navBarLayout,thisDom);
+    },
+    jsFile: "js/comarea.js",
+    cssFile: "css/navbar.css",
+    id: "navbar",
+    className: "",
+    text: "导航区"
+},{
+    cssFile: "css/comarea.css",
+    id: "comarea",
+    className: "",
+    text: "功能区"
+}];
+TemplatedForm.layout(topLayout,document.body);
+</script>
+</html>

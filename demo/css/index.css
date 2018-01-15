@@ -1,0 +1,8 @@
+html,
+body {
+  height: 100%;
+}
+#wrapCon {
+  height: 100%;
+  border: 1px solid #dddddd;
+}

@@ -1,0 +1,6 @@
+#comarea {
+  height: calc(100% - 64px);
+  margin-left: 160px;
+  border: 1px solid greenyellow;
+  overflow: hidden;
+}
