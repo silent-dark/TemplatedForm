@@ -46,7 +46,7 @@
 
 ### 参数：
 * layoutDef - 块属性定义，可以为数组。有效的属性为：
-```text
+```
 {
     moduleName: String, // 模块入口函数或名称，接口：function(thisDom)
     trigger: String,    // 指示入口函数调用的事件名，例如onload/onclick等
