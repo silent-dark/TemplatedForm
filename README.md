@@ -46,7 +46,8 @@
 
 ### 参数：
 * layoutDef - 块属性定义，可以为数组。有效的属性为：
-```
+
+```javascript
 {
     moduleName: String, // 可选，模块入口函数或名称，接口：function(thisDom)
     trigger: String,    // 可选，指示入口函数调用的事件名，例如onload/onclick等
@@ -58,6 +59,7 @@
     text:String         // 可选，被创建div中显示的text
 }
 ```
+
 * container - 接收被创建div的容器（ID或DOM对象）。
 
 ### 用法:
