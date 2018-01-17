@@ -7,14 +7,14 @@
 ### 属性：
 * domTpl - 作为模板的DOM对象。只需要在作为模板的HTML标签中，增加一个fieldName的自定义属性，该自定义属性的写法类似style属性的格式：`fieldName1[:DOMProperty1][;fieldName2[:DOMProperty2][;...]]`，如果DOMProperty为空，则默认为value或textContent。
 * domItems`[]` - 渲染后从模板复制出的DOM对象（Array）。
-* onAddDomItem - 当渲染数组时，复制模板DOM对象时的回调函数function(dataObj, dataIdx)，该回调函数的this指向对应的Form对象。
+* onAddDomItem - 当渲染数组时，复制模板DOM对象时的回调函数：function(dataObj, dataIdx)，该回调函数的this指向对应的Form对象。
 * fieldNameAlias - 给模板属性fieldName设置的别名，可利用该参数在同一个模板中渲染或提取不同的数据。
-* valAttrEvals - 渲染或提取数据字段时，若需要执行一个过程（而不是映射到DOM对象的某个Property），则以数据字段名称为Key，向该对象中注册一个回调函数function(attrVal)，该回调函数的this指向对应的DOM对象。
+* valAttrEvals - 渲染或提取数据字段时，若需要执行一个过程（而不是映射到DOM对象的某个Property），则以数据字段名称为Key，向该对象中注册一个回调函数：function(attrVal)，该回调函数的this指向对应的DOM对象。
 
 ### 方法：
 * 构造函数 - function(tpl, onAddDomItem, fieldNameAlias)
     * tpl - 模板的ID或DOM对象。
-    * `[onAddDomItem]` - 当渲染数组时，复制模板DOM对象时的回调函数function(dataObj, dataIdx)，该回调函数的this指向对应的Form对象。
+    * `[onAddDomItem]` - 当渲染数组时，复制模板DOM对象时的回调函数：function(dataObj, dataIdx)，该回调函数的this指向对应的Form对象。
     * `[fieldNameAlias]` - 给模板属性fieldName设置的别名，可利用该参数在同一个模板中渲染或提取不同的数据。
 * Form.prototype.formData - function(dataArg)
     * `[dataArg]` - 被渲染的数据对象或数组，如果某个下级数据字段是数组类型，则需要（利用valAttrEvals和fieldNameAlias）将该数据字段整体进行处理。如果该参数为空，则表示从模板中提取数据。
@@ -42,14 +42,14 @@
 请参考：tplObj属性。具体例子请参考：demo/templatedForm-temp.html。
 
 ## TemplatedForm.layout
-一个用于生成布局div的函数function(layoutDef, container)（使用Template实现）。
+一个用于生成布局div的函数：function(layoutDef, container)（使用Template实现）。
 
 ### 参数：
 * layoutDef - 块属性定义，可以为数组。有效的属性为：
 ```
 {
-    moduleName: String, // 模块入口函数或名称，接口：function(thisDom)
-    trigger: String,    // 指示入口函数调用的事件名，例如onload/onclick等
+    moduleName: String, // 可选，模块入口函数或名称，接口：function(thisDom)
+    trigger: String,    // 可选，指示入口函数调用的事件名，例如onload/onclick等
     cssFile: String,    // 可选，需动态加载的css文件
     jsFile: String,     // 可选，需动态加载的js文件
     id: String,         // 可选，被创建div的id
@@ -63,3 +63,70 @@
 ### 用法:
 请参考：layoutDef参数。具体例子请参考：demo/templatedForm-layout.html。
 
+## TemplatedForm.randomString
+一个随机字符串生成函数：function(length)。
+
+### 参数：
+* length - 随机字符串长度。
+
+## TemplatedForm.fieldData
+通过Property路径获取/设置Property值的函数：function(target, refPath, fieldVal)。
+
+### 参数：
+* target - 需要获取/设置Property值的对象。
+* refPath - Property的引用路径（即使用.分隔的下级Property名称）。
+* `[fieldVal]` - 需要设置的Property值，如果该参数为空表示获取Property值。
+
+### 用法:
+```javascript
+var obj={
+    part1: {
+        x: "X"
+    }
+};
+TemplatedForm.fieldData(obj, "part1.x"); // 返回"X"
+TemplatedForm.fieldData(obj, "part2.y", "Y"); // 创建obj.part2.y并设置为"Y"
+```
+
+## TemplatedForm.obj2html
+一个将对象转换为DOM对象的函数：function(obj, outHtml)。
+
+### 参数：
+* obj - 被转换的对象，propertyName即为转换后DOM对象的tagName，使用$:{}包含的propertyName即为转换后DOM对象的attributeName。
+* outHtml - 转换的容器（DOM对象）。
+
+### 用法:
+请参考Template.prototype.init的实现。
+
+## TemplatedForm.loadCSS
+一个动态加载CSS的函数：function(filePath, onLoad, container)。
+
+### 参数：
+* filePath - CSS的文件路径。
+* `[onLoad]` - 加载成功后的回调函数（无参）。
+* `[container]` - 被加载DOM对象的container。
+
+### 用法:
+请参考layout函数的实现。
+
+## TemplatedForm.loadJS
+一个动态加载JS的函数：function(filePath, onLoad, container)。
+
+### 参数：
+* filePath - JS的文件路径。
+* `[onLoad]` - 加载成功后的回调函数（无参）。
+* `[container]` - 被加载DOM对象的container。
+
+### 用法:
+请参考layout函数的实现。
+
+## TemplatedForm.dynamicLoad
+一个动态加载资源类Element的函数：function(tpl, pathAttr, container)。
+
+### 参数：
+* tpl - 描述该Element的对象（参考：obj2html函数的obj参数）。
+* pathAttr - 资源路径的属性名称。
+* `[container]` - 被加载DOM对象的container。
+
+### 用法:
+请参考loadCSS/loadJS函数的实现。

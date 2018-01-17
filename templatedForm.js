@@ -299,14 +299,16 @@ if (GLOBAL.TemplatedForm == null) {
     };
 
     // @param layoutDef - definitions of layout: {
-    //    moduleName: String, // the module name or callback of function(thisDom).
-    //    trigger: String,    // the trigger event name, such as onload/onclick/...
-    //    cssFile: String,    // optional，dynamic load css file.
-    //    jsFile: String,     // optional，dynamic load js file.
-    //    id: String,         // optional，the id of target div.
-    //    className: String,  // optional，the class of target div.
-    //    style: String,      // optional，the style of target div.
-    //    text:String         // optional，the text of target div.
+    //    moduleName: String, // optional, the module name or callback of
+    //                           function(thisDom).
+    //    trigger: String,    // optional, the trigger event name, such as
+    //                           onload/onclick/...
+    //    cssFile: String,    // optional, dynamic load css file.
+    //    jsFile: String,     // optional, dynamic load js file.
+    //    id: String,         // optional, the id of target div.
+    //    className: String,  // optional, the class of target div.
+    //    style: String,      // optional, the style of target div.
+    //    text:String         // optional, the text of target div.
     // }
     // @param container - the container id or element.
     TemplatedForm.layout = function(layoutDef, container) {
