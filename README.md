@@ -41,6 +41,42 @@
 ### 用法:
 请参考：tplObj属性。具体例子请参考：demo/templatedForm-temp.html。
 
+对于数据对象中包含数组的情况：
+```javascript
+var dataTpl = {
+    div: {
+        div: [{$:{
+            fieldName: "dataField"
+        }},{$:{
+            fieldName: "arrayField"
+        }}]
+    }
+};
+var arrayDataTpl = {
+    span: {$:{
+        style: "margin:8px",
+        fieldName: "arrayFieldData"
+    }}
+};
+var demoData = {
+    dataField: "...",
+    arrayField: [{
+        arrayFieldData: "something in array"
+    }]
+};
+function render(domArea, tpl, data) {
+    var formTpl = new TemplatedForm.Template(domArea, tpl);
+    formTpl.init();
+    formTpl.forms[0].domTpl = formTpl.forms[0].domTpl.lastChild;
+    formTpl.forms[0].valAttrEvals["arrayField"] = function(arrayField) {
+        if (arrayField)
+            render(this, arrayDataTpl, arrayField);
+    };
+    formTpl.forms[0].formData(data);
+};
+render(document.body, dataTpl, demoData);
+```
+
 ## TemplatedForm.layout
 一个用于生成布局div的函数：function(layoutDef, container)（使用Template实现）。
 
