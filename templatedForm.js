@@ -92,6 +92,10 @@ if (GLOBAL.TemplatedForm == null) {
         //this.onAddDomItem = function(dataObj, i) {
         //    // use this.domItems[i] for getting the dom object;
         //};
+        if (onAddDomItem && onAddDomItem.call == null) {
+            fieldNameAlias = onAddDomItem;
+            onAddDomItem = null;
+        }
         this.onAddDomItem = onAddDomItem;
         this.fieldNameAlias = fieldNameAlias? fieldNameAlias: "fieldName";
         this.valAttrEvals = {};
@@ -117,6 +121,17 @@ if (GLOBAL.TemplatedForm == null) {
         var attrEval = (
             pairItems.length > 1 && pairItems[1] !== "function"
         )? pairItems[1]: this.valAttrEvals[ pairItems[0] ];
+        if (attrEval && attrEval.call == null &&
+            target.getAttribute(attrEval) != null)
+        {
+            var attrName = attrEval;
+            attrEval = function(attrVal) {
+                if (attrVal == null)
+                    return target.getAttribute(attrName);   // get
+                else
+                    target.setAttribute(attrName, attrVal); // set
+            };
+        }
         if (attrEval == null)
             attrEval = this.defaultValAttrEval(target);
         return (
@@ -235,7 +250,7 @@ if (GLOBAL.TemplatedForm == null) {
         );
         this.forms = new Array(fieldNameAlias.length);
         for (var i = 0; i < fieldNameAlias.length; ++i)
-            this.forms[i] = new Form(container, null, fieldNameAlias[i]);
+            this.forms[i] = new Form(container, fieldNameAlias[i]);
     };
 
     // @param reset - indicates if clear the innerHTML of the container.

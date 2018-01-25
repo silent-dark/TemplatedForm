@@ -14,7 +14,7 @@
     var tpl = {
         a: { $: {
             // 演示数据字段的绑定声明
-            fieldName: "contact.email:function;color:style.color;name",
+            fieldName: "contact.email:email;color:style.color;name",
             // 演示事件中访问自定义属性
             onclick: function() {
                 console.log( 'my email: ' + this.getAttribute('email') );
@@ -40,17 +40,7 @@
         ["fieldName", "fieldMap"] // 演示数据字段申明的别名
     );
     tplFormDemo.init();
-    // 演示数据字段与自定义属性绑定：
-    tplFormDemo.forms[0].valAttrEvals["contact.email"] = function(attrVal) {
-        if (attrVal) {
-            // set:
-            this.setAttribute("email", attrVal);
-        } else {
-            // get:
-            return this.getAttribute("email");
-        }
-    };
-    // 演示动态事件绑定：
+    // 演示自定义属性映射：
     tplFormDemo.forms[1].valAttrEvals["contact.city"] = function(attrVal) {
         if (attrVal) {
             // set:

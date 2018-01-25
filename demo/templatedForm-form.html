@@ -8,7 +8,7 @@
     <!-- 演示HTML模板 -->
     <div id="tplFormDemo">
         <!-- 演示数据字段的绑定声明 -->                               <!-- 演示事件中访问自定义属性 -->
-        <a fieldName="contact.email:function;color:style.color;name" onclick="console.log( 'my email: ' + this.getAttribute('email') )" style="color:black" email="@" href="#">名字</a>
+        <a fieldName="contact.email:email;color:style.color;name" onclick="console.log( 'my email: ' + this.getAttribute('email') )" style="color:black" email="@" href="#">名字</a>
         <input type="text" fieldMap="contact.city" value="城市"/>
     </div>
 </div>
@@ -16,19 +16,9 @@
 <script type="text/javascript" src="../templatedForm.js"></script>
 <script type="text/javascript">
     var tplFormDemo = new TemplatedForm.Form("tplFormDemo");
-    // 演示数据字段与自定义属性绑定：
-    tplFormDemo.valAttrEvals["contact.email"] = function(attrVal) {
-        if (attrVal) {
-            // set:
-            this.setAttribute("email", attrVal);
-        } else {
-            // get:
-            return this.getAttribute("email");
-        }
-    };
     // 演示数据字段申明的别名：
-    var tplFormDemoWithAlias = new TemplatedForm.Form(tplFormDemo.domTpl, null, "fieldMap");
-    // 演示动态事件绑定：
+    var tplFormDemoWithAlias = new TemplatedForm.Form(tplFormDemo.domTpl, "fieldMap");
+    // 演示自定义属性映射：
     tplFormDemoWithAlias.valAttrEvals["contact.city"] = function(attrVal) {
         if (attrVal) {
             // set:
