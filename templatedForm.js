@@ -5,7 +5,7 @@
 // @remark: a module for templating view layer.
 
 var GLOBAL = window;
-if (GLOBAL.TemplatedForm == null) {
+if (GLOBAL.TemplatedForm == null) (function() {
     var TemplatedForm = {
         DOCX: document
     };
@@ -393,4 +393,4 @@ if (GLOBAL.TemplatedForm == null) {
     TemplatedForm.Template = Template;
     TemplatedForm.Form = Form;
     GLOBAL.TemplatedForm = TemplatedForm;
-}
+})();
