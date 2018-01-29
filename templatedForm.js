@@ -121,19 +121,20 @@ if (GLOBAL.TemplatedForm == null) (function() {
         var attrEval = (
             pairItems.length > 1 && pairItems[1] !== "function"
         )? pairItems[1]: this.valAttrEvals[ pairItems[0] ];
-        if (attrEval && attrEval.call == null &&
-            target.getAttribute(attrEval) != null)
-        {
-            var attrName = attrEval;
-            attrEval = function(attrVal) {
-                if (attrVal == null)
-                    return target.getAttribute(attrName);   // get
-                else
-                    target.setAttribute(attrName, attrVal); // set
-            };
-        }
-        if (attrEval == null)
+        if (attrEval) {
+            if (attrEval.call == null && target.getAttribute(attrEval) != null)
+            {
+                var attrName = attrEval;
+                attrEval = function(attrVal) {
+                    if (attrVal == null)
+                        return target.getAttribute(attrName);   // get
+                    else
+                        target.setAttribute(attrName, attrVal); // set
+                };
+            }
+        } else {
             attrEval = this.defaultValAttrEval(target);
+        }
         return (
             attrEval.call
         )? attrEval.call(target, attrVal): TemplatedForm.fieldData(
