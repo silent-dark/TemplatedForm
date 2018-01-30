@@ -11,7 +11,7 @@
 //     navHighLightSel: String, // the class name of selected highlight-tag.
 //     navIcon: String          // the class name of any nav-item.
 // }
-if (window.navList == null) (function() {
+if (TemplatedForm.navList == null) (function() {
     var domComArea = null;
     var domLastSel = null;
     var setItemStyle = function(itemStyles) {
@@ -30,7 +30,7 @@ if (window.navList == null) (function() {
         setItemStyle.call(this, [
             "navStyleSel", "navHighLightSel", "iconSrcSel"
         ]);
-        if(this.comAreaLayout && domComArea)
+        if (this.comAreaLayout && domComArea)
             TemplatedForm.layout(this.comAreaLayout, domComArea);
     };
     var navListTpl = function(styles) {
@@ -62,7 +62,7 @@ if (window.navList == null) (function() {
             }]
         };
     };
-    window.navList = function(navListDef, styles, container, comArea) {
+    TemplatedForm.navList = function(navListDef, styles, container, comArea) {
         domComArea = TemplatedForm.getDomElement(comArea);
         var navTemplate = new TemplatedForm.Template(
             container, navListTpl, styles
