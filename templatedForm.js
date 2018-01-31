@@ -272,7 +272,10 @@ if (GLOBAL.TemplatedForm == null) (function() {
         var fileName = (s > 0)? filePath.substring(s): filePath;
         var domLoaded = this.DOCX.getElementsByTagName(tagName);
         for (var i = 0; i < domLoaded.length; ++i) {
-            if ( domLoaded[i][pathAttr].lastIndexOf(fileName) >=0 ) {
+            var loadedPath = domLoaded[i][pathAttr];
+            s = loadedPath.lastIndexOf("/") + 1;
+            var loadedFile = (s > 0)? loadedPath.substring(s): loadedPath;
+            if (fileName === loadedFile) {
                 // loaded:
                 tagName = null;
                 break;
