@@ -83,8 +83,8 @@ if (GLOBAL.TemplatedForm == null) (function() {
     };
 
     // @param tpl - the template id or element.
-    // [@param onAddDomItem] - callback function(@param dataObj, @param i) when
-    //                         add multiple elements.
+    // [@param onAddDomItem] - the callback function(@param dataObj, @param i)
+    //                         when add multiple elements.
     // [@param fieldNameAlias] - for naming an alias of 'fieldName' attribute.
     var Form = function(tpl, onAddDomItem, fieldNameAlias) {
         this.domTpl = TemplatedForm.getDomElement(tpl);
@@ -318,7 +318,7 @@ if (GLOBAL.TemplatedForm == null) (function() {
     };
 
     // @param layoutDef - definitions of layout: {
-    //    moduleName: String, // optional, the module name or callback of
+    //    moduleName: String, // optional, the module name or callback
     //                           function(thisDom).
     //    trigger: String,    // optional, the trigger event name, such as
     //                           onload/onclick/...
