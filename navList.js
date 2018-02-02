@@ -48,10 +48,13 @@ if (TemplatedForm.navList == null) (function() {
                     setItemStyles.call(self.domSel, [
                         "navStyle", "navHighLight", "iconSrc"
                     ]);
+                    self.domSel = this;
                 }
                 setItemStyles.call(this, [
                     "navStyleSel", "navHighLightSel", "iconSrcSel"
                 ]);
+                if (self.onSel)
+                    self.onSel.call(this);
             }
         }, styles);
     };
