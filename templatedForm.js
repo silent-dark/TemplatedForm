@@ -418,15 +418,16 @@ if (GLOBAL.TemplatedForm == null) (function() {
         this.setSelIdx = function(idx, cb) {
             var domSel = this.tpl.forms[0].domItems[idx];
             domSel.idx = this.selIdx = idx;
-            if (cb == null)
-                this.onSel = callbacks.onSel;
-            else if (!cb)
-                this.onSel = null;
-            else if (cb.call)
-                this.onSel = cb;
-            else
-                this.onSel = callbacks.onSel;
             tplArgs.onSetSelIdx.call(domSel);
+            this.domSel = domSel;
+            if (cb == null)
+                cb = callbacks.onSel;
+            else if (!cb)
+                cb = null;
+            else if (cb.call == null)
+                cb = callbacks.onSel;
+            if (cb)
+                cb.call(domSel);
         };
         this.setSelIdx(0);
     };

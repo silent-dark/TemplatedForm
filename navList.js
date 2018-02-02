@@ -5,33 +5,6 @@
 // @remark: a module to render nav-list view.
 
 if (TemplatedForm.navList == null) (function() {
-    var setItemStyles = function(itemStyles) {
-        var childSpan = this.getElementsByTagName("span");
-        this.className = this.getAttribute(itemStyles[0]);
-        childSpan[0].className = this.getAttribute(itemStyles[1]);
-        childSpan[1].style.backgroundImage = this.getAttribute(itemStyles[2]);
-    };
-    var getTplArgs = function(styles) {
-        var self = this;
-        return Object.assign({
-            onSetSelIdx: function() {
-                if (self.domSel != this) {
-                    setItemStyles.call(self.domSel, [
-                        "navStyle", "navHighLight", "iconSrc"
-                    ]);
-                    self.domSel = this;
-                }
-                setItemStyles.call(this, [
-                    "navStyleSel", "navHighLightSel", "iconSrcSel"
-                ]);
-                if (self.onSel)
-                    self.onSel.call(this);
-            }
-        }, styles);
-    };
-    var getFormTpl = function(domTpl) {
-        return domTpl.lastChild;
-    };
     var navListTpl = function(tplArgs) {
         this.div = {
             $: {
@@ -60,6 +33,30 @@ if (TemplatedForm.navList == null) (function() {
                 }
             }]
         };
+    };
+    var setItemStyles = function(itemStyles) {
+        var childSpan = this.getElementsByTagName("span");
+        this.className = this.getAttribute(itemStyles[0]);
+        childSpan[0].className = this.getAttribute(itemStyles[1]);
+        childSpan[1].style.backgroundImage = this.getAttribute(itemStyles[2]);
+    };
+    var getTplArgs = function(styles) {
+        var self = this;
+        return Object.assign({
+            onSetSelIdx: function() {
+                if (self.domSel != this) {
+                    setItemStyles.call(self.domSel, [
+                        "navStyle", "navHighLight", "iconSrc"
+                    ]);
+                }
+                setItemStyles.call(this, [
+                    "navStyleSel", "navHighLightSel", "iconSrcSel"
+                ]);
+            }
+        }, styles);
+    };
+    var getFormTpl = function(domTpl) {
+        return domTpl.lastChild;
     };
     // @param navListDef - definitions of nav-list: {
     //     text: String,
