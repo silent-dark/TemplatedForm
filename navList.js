@@ -5,48 +5,54 @@
 // @remark: a module to render nav-list view.
 
 if (TemplatedForm.navList == null) (function() {
-    var domContainer = null;
-    var domLastSel = null;
     var setItemStyles = function(itemStyles) {
         var childSpan = this.getElementsByTagName("span");
         this.className = this.getAttribute(itemStyles[0]);
         childSpan[0].className = this.getAttribute(itemStyles[1]);
         childSpan[1].style.backgroundImage = this.getAttribute(itemStyles[2]);
     };
-    var setFocus = function() {
-        if (domLastSel != this) {
-            setItemStyles.call(domLastSel, [
-                "navStyle", "navHighLight", "iconSrc"
-            ]);
-            domLastSel = this;
-        }
-        setItemStyles.call(this, [
-            "navStyleSel", "navHighLightSel", "iconSrcSel"
-        ]);
-        if (domContainer && domContainer.onSel)
-            domContainer.onSel(this);
+    var getTplArgs = function(styles) {
+        var self = this;
+        return Object.assign({
+            onSetSelIdx: function() {
+                if (self.domSel != this) {
+                    setItemStyles.call(self.domSel, [
+                        "navStyle", "navHighLight", "iconSrc"
+                    ]);
+                    self.domSel = this;
+                }
+                setItemStyles.call(this, [
+                    "navStyleSel", "navHighLightSel", "iconSrcSel"
+                ]);
+                if (self.onSel)
+                    self.onSel.call(this);
+            }
+        }, styles);
     };
-    var navListTpl = function(styles) {
+    var getFormTpl = function(domTpl) {
+        return domTpl.lastChild;
+    };
+    var navListTpl = function(tplArgs) {
         this.div = {
             $: {
                 fieldName: "iconSrc:iconSrc;iconSrcSel:iconSrcSel;id:id",
-                'class': styles.navStyle,
-                navStyle: styles.navStyle,
-                navStyleSel: styles.navStyleSel,
-                navHighLight: styles.navHighLight,
-                navHighLightSel: styles.navHighLightSel,
+                'class': tplArgs.navStyle,
+                navStyle: tplArgs.navStyle,
+                navStyleSel: tplArgs.navStyleSel,
+                navHighLight: tplArgs.navHighLight,
+                navHighLightSel: tplArgs.navHighLightSel,
                 iconSrc: "",
                 iconSrcSel: "",
-                onclick: setFocus
+                onclick: tplArgs.onSetSelIdx
             },
             span: [{
                 $: {
-                    'class': styles.navHighLight
+                    'class': tplArgs.navHighLight
                 }
             }, {
                 $: {
                     fieldName: "iconSrc:style.backgroundImage",
-                    'class': styles.navIcon
+                    'class': tplArgs.navIcon
                 }
             }, {
                 $: {
@@ -70,31 +76,10 @@ if (TemplatedForm.navList == null) (function() {
     // @param container - the container id or element.
     // @param onSel - the callback function(domSel) when select list-item.
     TemplatedForm.navList = function(navListDef, styles, container, onSel) {
-        var navTemplate = new TemplatedForm.Template(
-            container, navListTpl, styles
-        );
-        navTemplate.init();
-        domContainer = navTemplate.forms[0].domTpl;
-        domLastSel = domContainer.lastChild;
-        navTemplate.forms[0].onAddDomItem = function(dataObj, i) {
-            this.domItems[i].idx = i;
-        };
-        navTemplate.forms[0].domTpl = domLastSel;
-        navTemplate.forms[0].formData(navListDef);
-        // @param idx - the index of list-item.
-        // [@param cb] - a callback function(domSel) or bool value to indicate
-        //               if trigger the preset callback.
-        domContainer.focusOn = function(idx, cb) {
-            if (cb) {
-                if (cb.call)
-                    domContainer.onSel = cb;
-            } else {
-                if (cb != null)
-                    domContainer.onSel = null;
-            }
-            setFocus.call(navTemplate.forms[0].domItems[idx]);
-            domContainer.onSel = onSel;
-        };
-        domContainer.focusOn(0, onSel);
+        return new TemplatedForm.ListView({
+            onBefInit: getTplArgs,
+            onBefRender: getFormTpl,
+            'onSel': onSel
+        }, navListTpl, navListDef, styles, container);
     };
 })();

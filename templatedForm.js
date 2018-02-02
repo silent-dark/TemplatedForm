@@ -83,8 +83,8 @@ if (GLOBAL.TemplatedForm == null) (function() {
     };
 
     // @param tpl - the template id or element.
-    // [@param onAddDomItem] - the callback function(@param dataObj, @param i)
-    //                         when add multiple elements.
+    // [@param onAddDomItem] - the callback function(dataObj, dataIdx) when add
+    //                         multiple elements.
     // [@param fieldNameAlias] - for naming an alias of 'fieldName' attribute.
     var Form = function(tpl, onAddDomItem, fieldNameAlias) {
         this.domTpl = TemplatedForm.getDomElement(tpl);
@@ -394,7 +394,45 @@ if (GLOBAL.TemplatedForm == null) (function() {
         tplForm.forms[0].formData(layoutDef);
     };
 
+    // @param callbacks - the callbacks: {
+    //    onBefInit: function(styles),  // should return tplArgs.
+    //    onBefRender: function(domTpl),// should return domTpl.
+    //    onSel: function()
+    // }
+    // @param listTpl - the tpl constructor (function).
+    // @param listData - the data for render.
+    // @param styles - the styles for render.
+    // @param container - the container id or element.
+    var ListView = function(callbacks, listTpl, listData, styles, container) {
+        var tplArgs = callbacks.onBefInit.call(this, styles);
+        this.tpl = new TemplatedForm.Template(container, listTpl, tplArgs);
+        this.tpl.init(true);
+        this.tpl.forms[0].domTpl = this.domSel = callbacks.onBefRender.call(
+            this, this.tpl.forms[0].domTpl
+        );
+        this.tpl.forms[0].formData(listData);
+
+        // @param idx - the index of list-item.
+        // [@param cb] - a callback function() or bool value to indicate if
+        //               trigger the preset callback.
+        this.setSelIdx = function(idx, cb) {
+            var domSel = this.tpl.forms[0].domItems[idx];
+            domSel.idx = this.selIdx = idx;
+            if (cb == null)
+                this.onSel = callbacks.onSel;
+            else if (!cb)
+                this.onSel = null;
+            else if (cb.call)
+                this.onSel = cb;
+            else
+                this.onSel = callbacks.onSel;
+            tplArgs.onSetSelIdx.call(domSel);
+        };
+        this.setSelIdx(0);
+    };
+
     TemplatedForm.Template = Template;
     TemplatedForm.Form = Form;
+    TemplatedForm.ListView = ListView;
     GLOBAL.TemplatedForm = TemplatedForm;
 })();
