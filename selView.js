@@ -9,13 +9,27 @@ if (TemplatedForm.selView == null) (function() {
         this.div = [{
             $: {
                 'class': tplArgs.bodyStyle,
-                onclick: tplArgs.onShowList
+                onclick: function() {
+                    var domList = this.nextSibling;
+                    domList.style.display = "block";
+                    domList.style.width = this.clientHeight.toString() + "px";
+                    if (domList.getAttribute("posOff") == -1) {
+                        domList.style.top = (
+                            -domList.clientHeight
+                        ).toString() + "px";
+                    }
+                    domList.focus();
+                }
             }
         }, {
             $: {
+                posOff: tplArgs.posOff,
                 style: "display:none;position:absolute",
                 'class': tplArgs.listStyle,
-                posOff: tplArgs.posOff
+                tabIndex: -1,
+                onblur: function() {
+                    this.style.display = "none";
+                }
             },
             div: {
                 $: {
@@ -29,22 +43,10 @@ if (TemplatedForm.selView == null) (function() {
     var getTplArgs = function(styles) {
         var self = this;
         return Object.assign({
-            onShowList: function() {
-                this.nextSibling.style.display = "block";
-                if (this.nextSibling.getAttribute("posOff") == -1) {
-                    this.nextSibling.style.top = (
-                        -this.nextSibling.clientHeight
-                    ).toString() + "px";
-                }
-            },
             onSetSelIdx: function() {
-                this.parentElement.style.display = "none";
-                var domSelBody = this.parentElement.previousSibling;
-                var domSelInput = domSelBody.getElementsByTagName("input");
-                if (domSelInput.length > 0)
-                    domSelInput[0].value = this.textContent;
-                else
-                    domSelBody.textContent = this.textContent;
+                var domList = this.parentElement;
+                domList.style.display = "none";
+                domList.previousSibling.textContent = this.textContent;
                 self.domSel = this;
                 if (self.onSel)
                     self.onSel.call(this);
