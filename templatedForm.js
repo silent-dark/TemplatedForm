@@ -422,7 +422,6 @@ if (GLOBAL.TemplatedForm == null) (function() {
         // [@param cb] - a callback function() or bool value to indicate if
         //               trigger the preset callback.
         this.setSelIdx = function(idx, cb) {
-            this.selIdx = idx;
             var domSel = this.tpl.forms[0].domItems[idx];
             if (cb == null)
                 this.onSel = callbacks.onSel;
