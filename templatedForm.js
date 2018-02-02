@@ -410,14 +410,20 @@ if (GLOBAL.TemplatedForm == null) (function() {
         this.tpl.forms[0].domTpl = this.domSel = callbacks.onBefRender.call(
             this, this.tpl.forms[0].domTpl
         );
+        var onAddDomItem = this.tpl.forms[0].onAddDomItem;
+        this.tpl.forms[0].onAddDomItem = function(dataObj, i) {
+            this.domItems[i].idx = i;
+            if (onAddDomItem)
+                onAddDomItem.call(this, dataObj, i);
+        };
         this.tpl.forms[0].formData(listData);
 
         // @param idx - the index of list-item.
         // [@param cb] - a callback function() or bool value to indicate if
         //               trigger the preset callback.
         this.setSelIdx = function(idx, cb) {
+            this.selIdx = idx;
             var domSel = this.tpl.forms[0].domItems[idx];
-            domSel.idx = this.selIdx = idx;
             if (cb == null)
                 this.onSel = callbacks.onSel;
             else if (!cb)
