@@ -361,13 +361,8 @@ if (GLOBAL.TemplatedForm == null) (function() {
             }
         };
         tplForm.forms[0].valAttrEvals["cssFile"] = function(filePath) {
-            if (filePath) {
-                var domDiv = this;
-                domDiv.style.visibility = "hidden";
-                self.loadCSS(filePath, function() {
-                    domDiv.style.visibility = "visible";
-                });
-            }
+            if (filePath)
+                self.loadCSS(filePath);
         };
         tplForm.forms[0].valAttrEvals["jsFile"] = function(filePath) {
             if (filePath)
