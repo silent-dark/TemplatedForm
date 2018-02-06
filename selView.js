@@ -26,7 +26,7 @@ if (TemplatedForm.selView == null) (function() {
                 posOff: tplArgs.posOff,
                 style: "display:none;position:absolute",
                 'class': tplArgs.listStyle,
-                tabIndex: -1,
+                tabindex: -1,
                 onblur: function() {
                     this.style.display = "none";
                 }
@@ -67,10 +67,10 @@ if (TemplatedForm.selView == null) (function() {
     // @param container - the container id or element.
     // @param onSel - the callback function(domSel) when select list-item.
     TemplatedForm.selView = function(values, styles, container, onSel) {
-        return new TemplatedForm.ListView({
+        return new TemplatedForm.ListView(values, styles, container, {
             onBefInit: getTplArgs,
             onBefRender: getFormTpl,
             'onSel': onSel
-        }, selTpl, values, styles, container);
+        }, selTpl);
     };
 })();

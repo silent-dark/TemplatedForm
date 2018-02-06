@@ -5,7 +5,7 @@
 // @remark: a module to render nav-list view.
 
 if (TemplatedForm.navList == null) (function() {
-    var navListTpl = function(tplArgs) {
+    var navItemTpl = function(tplArgs) {
         this.div = {
             $: {
                 fieldName: "iconSrc:iconSrc;iconSrcSel:iconSrcSel;id:id",
@@ -58,9 +58,6 @@ if (TemplatedForm.navList == null) (function() {
             }
         }, styles);
     };
-    var getFormTpl = function(domTpl) {
-        return domTpl.lastChild;
-    };
     // @param navListDef - definitions of nav-list: {
     //     text: String,
     //     iconSrc: "url(/img/home.png)",
@@ -76,10 +73,9 @@ if (TemplatedForm.navList == null) (function() {
     // @param container - the container id or element.
     // @param onSel - the callback function(domSel) when select list-item.
     TemplatedForm.navList = function(navListDef, styles, container, onSel) {
-        return new TemplatedForm.ListView({
+        return new TemplatedForm.ListView(navListDef, styles, container, {
             onBefInit: getTplArgs,
-            onBefRender: getFormTpl,
             'onSel': onSel
-        }, navListTpl, navListDef, styles, container);
+        }, navItemTpl);
     };
 })();

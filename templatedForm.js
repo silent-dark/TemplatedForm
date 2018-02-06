@@ -398,7 +398,41 @@ if (GLOBAL.TemplatedForm == null) (function() {
     // @param listData - the data for render.
     // @param styles - the styles for render.
     // @param container - the container id or element.
-    var ListView = function(callbacks, listTpl, listData, styles, container) {
+    var ListView = function(listData, styles, container, callbacks, listTpl) {
+        if (callbacks == null)
+            callbacks = {};
+        if (listTpl == null) {
+            listTpl = function(tplArgs) {
+                this.div = {
+                    $: {
+                        fieldName: tplArgs.fieldMap,
+                        'class': tplArgs.itemStyle,
+                        onclick: tplArgs.onSetSelIdx
+                    }
+                };
+            };
+        }
+        if (callbacks.onBefInit == null) {
+            callbacks.onBefInit = function(styleArgs) {
+                var self = this;
+                return Object.assign({
+                    onSetSelIdx: function() {
+                        if (self.domSel != this) {
+                            self.domSel.className = styleArgs.itemStyle;
+                            self.domSel = this;
+                        }
+                        this.className = styleArgs.itemStyleSel;
+                        if (self.onSel)
+                            self.onSel.call(this);
+                    }
+                }, styleArgs);
+            };
+        }
+        if (callbacks.onBefRender == null) {
+            callbacks.onBefRender = function(domTpl) {
+                return domTpl.lastChild;
+            };
+        }
         var tplArgs = callbacks.onBefInit.call(this, styles);
         this.tpl = new TemplatedForm.Template(container, listTpl, tplArgs);
         this.tpl.init(true);
