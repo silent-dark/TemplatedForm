@@ -8,7 +8,8 @@ if (TemplatedForm.pageBar == null) {
     // @param callbacks - the callbacks: {
     //    onPrePage: function(domBtn),
     //    onNextPage: function(domBtn),
-    //    onInitGap: function(domGap)
+    //    onInitGap: function(domGap),
+    //    getScrollView: function()
     // }
     // @param styles - the styles of page-bar: {
     //     btnStyle: String,    // the class name of button.
@@ -16,22 +17,23 @@ if (TemplatedForm.pageBar == null) {
     // }
     // @param container - the container id or element.
     TemplatedForm.pageBar = function(callbacks, styles, container) {
-        if (callbacks.onPrePage == null) {
-            callbacks.onPrePage = function(domBtn) {
-                var domWithScroll = domBtn.parentElement.nextSibling;
-                var scrollPos = domWithScroll.scrollTop +
-                                domWithScroll.clientHeight;
-                domWithScroll.scrollTop = (
-                    scrollPos < domWithScroll.scrollTopMax
-                )? scrollPos: domWithScroll.scrollTopMax;
+        var domScrollView = (
+            callbacks.getScrollView
+        )? callbacks.getScrollView(): null;
+        if (callbacks.onPrePage == null && domScrollView) {
+            callbacks.onPrePage = function() {
+                var scrollPos = domScrollView.scrollTop +
+                                domScrollView.clientHeight;
+                domScrollView.scrollTop = (
+                    scrollPos < domScrollView.scrollTopMax
+                )? scrollPos: domScrollView.scrollTopMax;
             }
         }
-        if (callbacks.onNextPage == null) {
-            callbacks.onNextPage = function(domBtn) {
-                var domWithScroll = domBtn.parentElement.nextSibling;
-                var scrollPos = domWithScroll.scrollTop -
-                                domWithScroll.clientHeight;
-                domWithScroll.scrollTop = (scrollPos > 0)? scrollPos: 0;
+        if (callbacks.onNextPage == null && domScrollView) {
+            callbacks.onNextPage = function() {
+                var scrollPos = domScrollView.scrollTop -
+                                domScrollView.clientHeight;
+                domScrollView.scrollTop = (scrollPos > 0)? scrollPos: 0;
             }
         }
         var barLayout = [{
