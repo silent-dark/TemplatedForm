@@ -12,8 +12,8 @@ if (TemplatedForm.pageBar == null) {
     //    getScrollView: function()
     // }
     // @param styles - the styles of page-bar: {
-    //     btnStyle: String,    // the class name of button.
-    //     gapStyle: String     // the class name of gap.
+    //    btnStyle: String,    // the class name of button.
+    //    gapStyle: String     // the class name of gap.
     // }
     // @param container - the container id or element.
     TemplatedForm.pageBar = function(callbacks, styles, container) {
@@ -22,18 +22,18 @@ if (TemplatedForm.pageBar == null) {
         )? callbacks.getScrollView(): null;
         if (callbacks.onPrePage == null && domScrollView) {
             callbacks.onPrePage = function() {
+                var scrollPos = domScrollView.scrollTop -
+                                domScrollView.clientHeight;
+                domScrollView.scrollTop = (scrollPos > 0)? scrollPos: 0;
+            }
+        }
+        if (callbacks.onNextPage == null && domScrollView) {
+            callbacks.onNextPage = function() {
                 var scrollPos = domScrollView.scrollTop +
                                 domScrollView.clientHeight;
                 domScrollView.scrollTop = (
                     scrollPos < domScrollView.scrollTopMax
                 )? scrollPos: domScrollView.scrollTopMax;
-            }
-        }
-        if (callbacks.onNextPage == null && domScrollView) {
-            callbacks.onNextPage = function() {
-                var scrollPos = domScrollView.scrollTop -
-                                domScrollView.clientHeight;
-                domScrollView.scrollTop = (scrollPos > 0)? scrollPos: 0;
             }
         }
         var barLayout = [{

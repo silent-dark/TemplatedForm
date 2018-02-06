@@ -396,7 +396,11 @@ if (GLOBAL.TemplatedForm == null) (function() {
     // }
     // @param listTpl - the tpl constructor (function).
     // @param listData - the data for render.
-    // @param styles - the styles for render.
+    // @param styles - the styles: {
+    //    itemStyle: String,    // the class name of list-item.
+    //    itemStyleSel: String, // the class name of selected list-item.
+    //    fieldMap: String,     // the pairs of fieldName.
+    // }
     // @param container - the container id or element.
     var ListView = function(listData, styles, container, callbacks, listTpl) {
         if (callbacks == null)

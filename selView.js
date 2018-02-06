@@ -58,11 +58,11 @@ if (TemplatedForm.selView == null) (function() {
     };
     // @param values - the values for render.
     // @param styles - the styles of select: {
-    //     bodyStyle: String,   // the class name of sel-body.
-    //     listStyle: String,   // the class name of sel-list.
-    //     itemStyle: String    // the class name of list-item.
-    //     posOff: Number,      // show sel-list on sel-body if set to -1.
-    //     fieldMap: String,    // the pairs of fieldName.
+    //    bodyStyle: String,   // the class name of sel-body.
+    //    listStyle: String,   // the class name of sel-list.
+    //    itemStyle: String    // the class name of list-item.
+    //    posOff: Number,      // show sel-list on sel-body if set to -1.
+    //    fieldMap: String,    // the pairs of fieldName.
     // }
     // @param container - the container id or element.
     // @param onSel - the callback function(domSel) when select list-item.

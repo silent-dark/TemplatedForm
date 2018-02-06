@@ -59,16 +59,16 @@ if (TemplatedForm.navList == null) (function() {
         }, styles);
     };
     // @param navListDef - definitions of nav-list: {
-    //     text: String,
-    //     iconSrc: "url(/img/home.png)",
-    //     iconSrcSel: "url(/img/home-red.png)"
+    //    text: String,
+    //    iconSrc: "url(/img/home.png)",
+    //    iconSrcSel: "url(/img/home-red.png)"
     // }
     // @param styles - the styles of nav-list: {
-    //     navStyle: String,        // the class name of any nav-item.
-    //     navStyleSel: String,     // the class name of selected nav-item.
-    //     navHighLight: String,    // the class name of any highlight-tag.
-    //     navHighLightSel: String, // the class name of selected highlight-tag.
-    //     navIcon: String          // the class name of any nav-item.
+    //    navStyle: String,        // the class name of any nav-item.
+    //    navStyleSel: String,     // the class name of selected nav-item.
+    //    navHighLight: String,    // the class name of any highlight-tag.
+    //    navHighLightSel: String, // the class name of selected highlight-tag.
+    //    navIcon: String          // the class name of any nav-item.
     // }
     // @param container - the container id or element.
     // @param onSel - the callback function(domSel) when select list-item.
