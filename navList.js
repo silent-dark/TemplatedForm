@@ -63,7 +63,7 @@ if (TemplatedForm.navList == null) (function() {
     //     iconSrc: "url(/img/home.png)",
     //     iconSrcSel: "url(/img/home-red.png)"
     // }
-    // @param styles - styles of nav-list: {
+    // @param styles - the styles of nav-list: {
     //     navStyle: String,        // the class name of any nav-item.
     //     navStyleSel: String,     // the class name of selected nav-item.
     //     navHighLight: String,    // the class name of any highlight-tag.

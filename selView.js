@@ -57,7 +57,7 @@ if (TemplatedForm.selView == null) (function() {
         return domTpl.lastChild.lastChild;
     };
     // @param values - the values for render.
-    // @param styles - styles of nav-list: {
+    // @param styles - the styles of select: {
     //     bodyStyle: String,   // the class name of sel-body.
     //     listStyle: String,   // the class name of sel-list.
     //     itemStyle: String    // the class name of list-item.
