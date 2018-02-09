@@ -5,12 +5,6 @@
 // @remark: a module to render paged-list.
 
 if (TemplatedForm.pagedList == null) {
-    // @param cbs - the callbacks: {
-    //    onBefInit: function(styles),  // should return tplArgs.
-    //    onBefRender: function(domTpl),// should return domTpl.
-    //    onSel: function()
-    // }
-    // @param tpl - the tpl constructor (function).
     // @param values - the data for render.
     // @param styles - the styles: {
     //    pageBtnStyle: String, // the class name of page-bar button.
@@ -22,24 +16,38 @@ if (TemplatedForm.pagedList == null) {
     //    fieldMap: String,     // the pairs of fieldName.
     // }
     // @param container - the container id or element.
-    TemplatedForm.pagedList = function(values, styles, container, cbs, tpl) {
+    // [@param listRender] - the callback function(domList) to render list.
+    // [@param pageBarOpt] - the page-bar options: {
+    //    onInitGap: function(domGap),
+    //    btnNames: [String]
+    // }
+    TemplatedForm.pagedList = function(
+        values, styles, container, listRender, pageBarOpt)
+    {
+        if (listRender == null) {
+            listRender = function(domList) {
+                return new TemplatedForm.ListView(values, styles, domList);
+            };
+        }
+        if (pageBarOpt == null)
+            pageBarOpt = {};
+        var self = this;
         var thisLayout = [{
             moduleName: function(domPageBar) {
                 TemplatedForm.pageBar({
                     getScrollView: function() {
                         return domPageBar.nextSibling;
-                    }
+                    },
+                    onInitGap: pageBarOpt.onInitGap
                 }, {
                     btnStyle: styles.pageBtnStyle,
                     gapStyle: styles.pageGapStyle
-                }, domPageBar);
+                }, domPageBar, pageBarOpt.btnNames);
             },
             className: styles.pageBarStyle
         }, {
             moduleName: function(domList) {
-                domList.parentElement.myListView = new TemplatedForm.ListView(
-                    values, styles, domList, cbs, tpl
-                );
+                self.listView = listRender(domList);
                 var domPageBar = domList.previousSibling;
                 if (domList.scrollHeight > domList.clientHeight) {
                     domList.style.height = (

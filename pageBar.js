@@ -16,7 +16,8 @@ if (TemplatedForm.pageBar == null) {
     //    gapStyle: String     // the class name of gap.
     // }
     // @param container - the container id or element.
-    TemplatedForm.pageBar = function(callbacks, styles, container) {
+    // [@param btnNames] - the array of button names.
+    TemplatedForm.pageBar = function(callbacks, styles, container, btnNames) {
         var domScrollView = (
             callbacks.getScrollView
         )? callbacks.getScrollView(): null;
@@ -36,22 +37,25 @@ if (TemplatedForm.pageBar == null) {
                 )? scrollPos: domScrollView.scrollTopMax;
             }
         }
+        if (btnNames == null)
+            btnNames = ["上一页", "下一页"];
         var barLayout = [{
             moduleName: callbacks.onPrePage,
             trigger: "onclick",
             className: styles.btnStyle,
             style: "display:inline-block;cursor:pointer",
-            text: "上一页"
+            text: btnNames[0]
         }, {
             moduleName: callbacks.onInitGap,
             className: styles.gapStyle,
             style: "display:inline-block",
+            text: ""
         }, {
             moduleName: callbacks.onNextPage,
             trigger: "onclick",
             className: styles.btnStyle,
             style: "display:inline-block;cursor:pointer",
-            text: "下一页"
+            text: btnNames[1]
         }];
         TemplatedForm.layout(barLayout, container);
     };

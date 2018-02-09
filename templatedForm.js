@@ -389,12 +389,6 @@ if (GLOBAL.TemplatedForm == null) (function() {
         tplForm.forms[0].formData(layoutDef);
     };
 
-    // @param callbacks - the callbacks: {
-    //    onBefInit: function(styles),  // should return tplArgs.
-    //    onBefRender: function(domTpl),// should return domTpl.
-    //    onSel: function()
-    // }
-    // @param listTpl - the tpl constructor (function).
     // @param listData - the data for render.
     // @param styles - the styles: {
     //    itemStyle: String,    // the class name of list-item.
@@ -402,6 +396,12 @@ if (GLOBAL.TemplatedForm == null) (function() {
     //    fieldMap: String,     // the pairs of fieldName.
     // }
     // @param container - the container id or element.
+    // [@param callbacks] - the callbacks: {
+    //    onBefInit: function(styles),  // should return tplArgs.
+    //    onBefRender: function(domTpl),// should return domTpl.
+    //    onSel: function()
+    // }
+    // [@param listTpl] - the tpl constructor (function).
     var ListView = function(listData, styles, container, callbacks, listTpl) {
         if (callbacks == null)
             callbacks = {};
