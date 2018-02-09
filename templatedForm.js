@@ -455,7 +455,6 @@ if (GLOBAL.TemplatedForm == null) (function() {
         // [@param cb] - a callback function() or bool value to indicate if
         //               trigger the preset callback.
         this.setSelIdx = function(idx, cb) {
-            var domSel = this.tpl.forms[0].domItems[idx];
             if (cb == null)
                 this.onSel = callbacks.onSel;
             else if (!cb)
@@ -464,7 +463,7 @@ if (GLOBAL.TemplatedForm == null) (function() {
                 this.onSel = cb;
             else
                 this.onSel = callbacks.onSel;
-            tplArgs.onSetSelIdx.call(domSel);
+            tplArgs.onSetSelIdx.call(this.tpl.forms[0].domItems[idx]);
         };
         this.setSelIdx(0);
     };
