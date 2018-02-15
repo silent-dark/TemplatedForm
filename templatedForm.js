@@ -88,7 +88,7 @@ if (GLOBAL.TemplatedForm == null) (function() {
     // [@param fieldNameAlias] - for naming an alias of 'fieldName' attribute.
     var Form = function(tpl, onAddDomItem, fieldNameAlias) {
         this.domTpl = TemplatedForm.getDomElement(tpl);
-        this.domItems = [this.domTpl];
+        this.domItems = null;
         //this.onAddDomItem = function(dataObj, i) {
         //    // use this.domItems[i] for getting the dom object;
         //};
@@ -180,6 +180,8 @@ if (GLOBAL.TemplatedForm == null) (function() {
             return outObj;
         } else {
             // set:
+            if (this.domItems == null)
+                this.domItems = [domTpl];
             this.mapping(domTpl, function(domObj, pairItems) {
                 this.valAttrData(
                     domObj, pairItems,

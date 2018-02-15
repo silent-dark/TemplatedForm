@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>test</title>
+    </head>
+    <body>
+    </body>
+    <script src="/js/common/templatedForm.js"></script>
+    <script src="/js/common/selView.js"></script>
+    <script>
+        var selView = TemplatedForm.selView(
+            {val:"(none)"},
+            {fieldMap:"val"},
+            document.body,
+            function() {
+                console.log(this.textContent);
+            }
+        );
+        selView.remove(0);
+        selView.append([{
+            val: 1
+        },{
+            val: 2
+        },{
+            val: 3
+        }]);
+    </script>
+</html>
