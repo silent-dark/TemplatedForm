@@ -31,7 +31,6 @@ if (TemplatedForm.pagedList == null) {
         }
         if (pageBarOpt == null)
             pageBarOpt = {};
-        var self = this;
         var thisLayout = [{
             moduleName: function(domPageBar) {
                 TemplatedForm.pageBar({
@@ -47,7 +46,7 @@ if (TemplatedForm.pagedList == null) {
             className: styles.pageBarStyle
         }, {
             moduleName: function(domList) {
-                self.listView = listRender(domList);
+                domList.listView = listRender(domList);
                 var domPageBar = domList.previousSibling;
                 if (domList.scrollHeight > domList.clientHeight) {
                     domList.style.height = (
