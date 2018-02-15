@@ -10,12 +10,6 @@ if (TemplatedForm.navList == null) (function() {
             $: {
                 fieldName: "iconSrc:iconSrc;iconSrcSel:iconSrcSel;id:id",
                 'class': tplArgs.navStyle,
-                navStyle: tplArgs.navStyle,
-                navStyleSel: tplArgs.navStyleSel,
-                navHighLight: tplArgs.navHighLight,
-                navHighLightSel: tplArgs.navHighLightSel,
-                iconSrc: "",
-                iconSrcSel: "",
                 onclick: tplArgs.onSetSelIdx
             },
             span: [{
@@ -34,25 +28,31 @@ if (TemplatedForm.navList == null) (function() {
             }]
         };
     };
-    var setItemStyles = function(itemStyles) {
+    var setItemStyles = function() {
         var childSpan = this.getElementsByTagName("span");
-        this.className = this.getAttribute(itemStyles[0]);
-        childSpan[0].className = this.getAttribute(itemStyles[1]);
-        childSpan[1].style.backgroundImage = this.getAttribute(itemStyles[2]);
+        this.className = arguments[0];
+        childSpan[0].className = arguments[1];
+        childSpan[1].style.backgroundImage = arguments[2];
     };
     var getTplArgs = function(styles) {
         var self = this;
         return Object.assign({
             onSetSelIdx: function() {
                 if (self.domSel != this) {
-                    setItemStyles.call(self.domSel, [
-                        "navStyle", "navHighLight", "iconSrc"
-                    ]);
+                    setItemStyles.call(
+                        self.domSel,
+                        styles.navStyle,
+                        styles.navHighLight,
+                        self.domSel.iconSrc
+                    );
                     self.domSel = this;
                 }
-                setItemStyles.call(this, [
-                    "navStyleSel", "navHighLightSel", "iconSrcSel"
-                ]);
+                setItemStyles.call(
+                    this,
+                    styles.navStyleSel,
+                    styles.navHighLightSel,
+                    this.iconSrcSel
+                );
                 if (self.onSel)
                     self.onSel.call(this);
             }
@@ -68,7 +68,7 @@ if (TemplatedForm.navList == null) (function() {
     //    navStyleSel: String,     // the class name of selected nav-item.
     //    navHighLight: String,    // the class name of any highlight-tag.
     //    navHighLightSel: String, // the class name of selected highlight-tag.
-    //    navIcon: String          // the class name of any nav-item.
+    //    navIcon: String          // the class name of any nav-icon.
     // }
     // @param container - the container id or element.
     // @param onSel - the callback function(domSel) when select list-item.

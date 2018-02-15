@@ -53,9 +53,6 @@ if (TemplatedForm.selView == null) (function() {
             }
         }, styles);
     };
-    var getFormTpl = function(domTpl) {
-        return domTpl.lastChild.lastChild;
-    };
     // @param values - the values for render.
     // @param styles - the styles of select: {
     //    bodyStyle: String,   // the class name of sel-body.
@@ -69,7 +66,9 @@ if (TemplatedForm.selView == null) (function() {
     TemplatedForm.selView = function(values, styles, container, onSel) {
         return new TemplatedForm.ListView(values, styles, container, {
             onBefInit: getTplArgs,
-            onBefRender: getFormTpl,
+            onBefRender: function() {
+                return this.domTpl.lastChild.lastChild;
+            },
             'onSel': onSel
         }, selTpl);
     };

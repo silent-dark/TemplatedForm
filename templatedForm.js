@@ -256,9 +256,10 @@ if (GLOBAL.TemplatedForm == null) (function() {
 
     // @param reset - indicates if clear the innerHTML of the container.
     Template.prototype.init = function(reset) {
+        var domTpl = this.forms[0].domTpl;
         if (reset)
-            this.forms[0].domTpl.innerHTML = "";
-        TemplatedForm.obj2html(this.tplObj, this.forms[0].domTpl);
+            domTpl.innerHTML = "";
+        TemplatedForm.obj2html(this.tplObj, domTpl);
     };
 
     // @param tpl - the template for load.
@@ -332,14 +333,15 @@ if (GLOBAL.TemplatedForm == null) (function() {
     // @param container - the container id or element.
     TemplatedForm.layout = function(layoutDef, container) {
         var self = this;
-        var tplForm = new TemplatedForm.Template(container, {
+        var tpl = new TemplatedForm.Template(container, {
             div: {$:{
                 fieldName: "moduleName;cssFile;jsFile;id:id;className:className;style:style;text;trigger"
             }}
         });
-        tplForm.init(true);
-        tplForm.forms[0].domTpl = tplForm.forms[0].domTpl.lastChild;
-        tplForm.forms[0].valAttrEvals["moduleName"] = function(module) {
+        tpl.init(true);
+        var tplForm = tpl.forms[0];
+        tplForm.domTpl = tplForm.domTpl.lastChild;
+        tplForm.valAttrEvals["moduleName"] = function(module) {
             if (module) {
                 var domDiv = this;
                 domDiv.invokeModule = function() {
@@ -360,15 +362,15 @@ if (GLOBAL.TemplatedForm == null) (function() {
                 };
             }
         };
-        tplForm.forms[0].valAttrEvals["cssFile"] = function(filePath) {
+        tplForm.valAttrEvals["cssFile"] = function(filePath) {
             if (filePath)
                 self.loadCSS(filePath);
         };
-        tplForm.forms[0].valAttrEvals["jsFile"] = function(filePath) {
+        tplForm.valAttrEvals["jsFile"] = function(filePath) {
             if (filePath)
                 this.myJS = filePath;
         };
-        tplForm.forms[0].valAttrEvals["trigger"] = function(eventName) {
+        tplForm.valAttrEvals["trigger"] = function(eventName) {
             var domDiv = this;
             if (eventName && eventName !== "onload") {
                 var regEvent = function() {
@@ -386,7 +388,7 @@ if (GLOBAL.TemplatedForm == null) (function() {
                     setTimeout(domDiv.invokeModule); // to avoid dead-loop.
             }
         };
-        tplForm.forms[0].formData(layoutDef);
+        tplForm.formData(layoutDef);
     };
 
     // @param listData - the data for render.
@@ -398,7 +400,7 @@ if (GLOBAL.TemplatedForm == null) (function() {
     // @param container - the container id or element.
     // [@param callbacks] - the callbacks: {
     //    onBefInit: function(styles),  // should return tplArgs.
-    //    onBefRender: function(domTpl),// should return domTpl.
+    //    onBefRender: function(),      // should return domTpl.
     //    onSel: function()
     // }
     // [@param listTpl] - the tpl constructor (function).
@@ -433,28 +435,33 @@ if (GLOBAL.TemplatedForm == null) (function() {
             };
         }
         if (callbacks.onBefRender == null) {
-            callbacks.onBefRender = function(domTpl) {
-                return domTpl.lastChild;
+            callbacks.onBefRender = function() {
+                return this.domTpl.lastChild;
             };
         }
+
+        var self = this;
         var tplArgs = callbacks.onBefInit.call(this, styles);
-        this.tpl = new TemplatedForm.Template(container, listTpl, tplArgs);
-        this.tpl.init(true);
-        this.tpl.forms[0].domTpl = this.domSel = callbacks.onBefRender.call(
-            this, this.tpl.forms[0].domTpl
-        );
-        var onAddDomItem = this.tpl.forms[0].onAddDomItem;
-        this.tpl.forms[0].onAddDomItem = function(dataObj, i) {
+        var tpl = new TemplatedForm.Template(container, listTpl, tplArgs);
+        tpl.init(true);
+        var tplForm = this.tplForm = tpl.forms[0];
+        tplForm.domTpl = this.domSel = callbacks.onBefRender.call(tplForm);
+        var onAddDomItem = tplForm.onAddDomItem;
+        tplForm.onAddDomItem = function(dataObj, i) {
             this.domItems[i].idx = i;
             if (onAddDomItem)
                 onAddDomItem.call(this, dataObj, i);
         };
-        this.tpl.forms[0].formData(listData);
+        tplForm.formData(listData);
+        if ( !Array.isArray(listData) )
+            tplForm.domTpl.idx = 0;
 
         // @param idx - the index of list-item.
         // [@param cb] - a callback function() or bool value to indicate if
         //               trigger the preset callback.
         this.setSelIdx = function(idx, cb) {
+            if (tplForm.domItems[idx] == null)
+                throw new ReferenceError("invalid index!");
             if (cb == null)
                 this.onSel = callbacks.onSel;
             else if (!cb)
@@ -463,9 +470,107 @@ if (GLOBAL.TemplatedForm == null) (function() {
                 this.onSel = cb;
             else
                 this.onSel = callbacks.onSel;
-            tplArgs.onSetSelIdx.call(this.tpl.forms[0].domItems[idx]);
+            tplArgs.onSetSelIdx.call(tplForm.domItems[idx]);
         };
         this.setSelIdx(0);
+
+        // @param formItems - the reference of tplForm.domItems.
+        // @param posBef - the position where the cloned tplForm.domTpl will be
+        //                 inserted before, must explicitly pass null to insert
+        //                 at the end of the list.
+        // @return the index offset.
+        var cloneDomTpl = function(formItems, posBef) {
+            var cloneTpl = tplForm.domTpl;
+            if (cloneTpl.style.visibility == "hidden") {
+                cloneTpl.style.visibility = "visible";
+                return 0;
+            } else {
+                for (var i = 0; i < formItems.length; ++i) {
+                    if (formItems[i] != self.domSel && formItems[i]) {
+                        cloneTpl = formItems[i];
+                        break;
+                    }
+                }
+                tplForm.domTpl = cloneTpl.cloneNode(true);
+                tplForm.domTpl.removeAttribute("id");
+                cloneTpl.parentNode.insertBefore(tplForm.domTpl, posBef);
+                return formItems.length;
+            }
+        };
+
+        // @param itemData - the data for append.
+        this.append = function(itemData) {
+            var formItems = tplForm.domItems;
+            var itemIdxOff = cloneDomTpl(formItems, null);
+            tplForm.onAddDomItem = function(dataObj, i) {
+                this.domItems[i].idx = itemIdxOff + i;
+                if (onAddDomItem)
+                    onAddDomItem.call(this, dataObj, i);
+            };
+            tplForm.formData(itemData);
+            if ( !Array.isArray(itemData) )
+                tplForm.domTpl.idx = itemIdxOff;
+            formItems.concat(
+                Array.isArray(itemData)? tplForm.domItems: tplForm.domTpl
+            );
+            tplForm.domItems = formItems;
+        };
+
+        // @param idx - the index of list-item.
+        // @param emptyData - the item-data or callback when removed all items.
+        this.remove = function(idx, emptyData) {
+            var domItem = tplForm.domItems[idx];
+            if (domItem) {
+                if (domItem.parentNode.childNodes.length > 1) {
+                    if (this.domSel == domItem) {
+                        this.domSel = (
+                            domItem.previousSibling
+                        )? domItem.previousSibling: domItem.nextSibling;
+                    }
+                    if (tplForm.domTpl == domItem) {
+                        tplForm.domTpl = (
+                            domItem.previousSibling
+                        )? domItem.previousSibling: domItem.nextSibling;
+                    }
+                    domItem.parentNode.removeChild(domItem);
+                    tplForm.domItems[idx] = null;
+                } else {
+                    tplForm.domTpl = this.domSel = domItem;
+                    tplForm.domItems = [domItem];
+                    if (emptyData) {
+                        if (emptyData.call)
+                            emptyData.call(tplForm);
+                        else
+                            tplForm.formData(emptyData);
+                    } else {
+                        tplForm.domTpl.style.visibility = "hidden";
+                    }
+                }
+            }
+        };
+
+        // @param idx - the index of list-item.
+        // @param itemData - the data for update.
+        this.update = function(idx, itemData) {
+            if ( Array.isArray(itemData) )
+                throw new TypeError("invalid item-data!");
+            var formItems = tplForm.domItems;
+            if (formItems[idx] == null) {
+                var posBef = null;
+                for (var i = idx + 1; i < formItems.length; ++i) {
+                    if (formItems[i]) {
+                        posBef = formItems[i];
+                        break;
+                    }
+                }
+                cloneDomTpl(formItems, posBef);
+                formItems[idx] = tplForm.domTpl;
+            } else {
+                tplForm.domTpl = formItems[idx];
+            }
+            tplForm.formData(itemData);
+            tplForm.domTpl.idx = idx;
+        };
     };
 
     TemplatedForm.Template = Template;
