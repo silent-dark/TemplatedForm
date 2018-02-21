@@ -1,26 +1,33 @@
 if (TemplatedForm.UserList == null) {
     TemplatedForm.UserList = function(styles, container, callbacks) {
         var listTpl = function(tplArgs) {
-            var displayStyle = tplArgs.isTiled? "display:inline-block": "";
             this.div = {
                 $: {
-                    style: displayStyle,
                     'class': tplArgs.itemStyle,
                     onclick: tplArgs.onSetSelIdx
                 },
                 span: [{
-                    fieldName: "portrait:style.backgroundImage",
-                    'class': tplArgs.portraitStyle
+                    $: {
+                        style: "display:inline-block",
+                        fieldName: "portrait:style.backgroundImage",
+                        'class': tplArgs.portraitStyle
+                    }
                 }, {
-                    fieldName: "name",
-                    'class': tplArgs.nameStyle
+                    $: {
+                        fieldName: "name",
+                        'class': tplArgs.nameStyle
+                    }
                 }, {
-                    fieldName: "stat",
-                    'class': tplArgs.statStyle
+                    $: {
+                        fieldName: "stat",
+                        'class': tplArgs.statStyle
+                    }
                 }]
             };
+            if (tplArgs.isTiled)
+                this.div.$.style = "display:inline-block";
         };
-        var setChangeStatCallback = function() {
+        var setStatEval = function() {
             this.valAttrEvals["stat"] = function(stat) {
                 if (stat == null) {
                     // get:
@@ -38,7 +45,7 @@ if (TemplatedForm.UserList == null) {
             if (this.listView == null) {
                 this.listView = new TemplatedForm.ListView(
                     userInfo, styles, container, {
-                        onBefRender: setChangeStatCallback,
+                        onBefRender: setStatEval,
                         onSel: callbacks.onSel
                     }, listTpl
                 );

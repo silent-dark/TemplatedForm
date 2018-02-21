@@ -418,6 +418,8 @@ if (GLOBAL.TemplatedForm == null) (function() {
                         onclick: tplArgs.onSetSelIdx
                     }
                 };
+                if (tplArgs.isTiled)
+                    this.div.$.style = "display:inline-block";
             };
         }
         if (callbacks.onBefInit == null) {

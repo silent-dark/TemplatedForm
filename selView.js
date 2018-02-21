@@ -44,7 +44,7 @@ if (TemplatedForm.selView == null) (function() {
         var self = this;
         return Object.assign({
             onSetSelIdx: function() {
-                var domList = this.parentElement;
+                var domList = this.parentNode;
                 domList.style.display = "none";
                 domList.previousSibling.textContent = this.textContent;
                 self.domSel = this;
