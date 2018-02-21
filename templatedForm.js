@@ -573,6 +573,15 @@ if (GLOBAL.TemplatedForm == null) (function() {
             tplForm.formData(itemData);
             tplForm.domTpl.idx = idx;
         };
+
+        this.maxItemIdx = function() {
+            return tplForm.domItems? tplForm.domItems.length - 1: -1;
+        };
+        this.itemData = function(idx) {
+            return (
+                tplForm.domItems && tplForm.domItems[idx]
+            )? tplForm.formData(idx): null;
+        };
     };
 
     TemplatedForm.Template = Template;
