@@ -514,10 +514,9 @@ if (GLOBAL.TemplatedForm == null) (function() {
             tplForm.formData(itemData);
             if ( !Array.isArray(itemData) )
                 tplForm.domTpl.idx = itemIdxOff;
-            formItems.concat(
+            tplForm.domItems = formItems.concat(
                 Array.isArray(itemData)? tplForm.domItems: tplForm.domTpl
             );
-            tplForm.domItems = formItems;
         };
 
         // @param idx - the index of list-item.
