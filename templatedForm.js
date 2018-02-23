@@ -444,7 +444,6 @@ if (GLOBAL.TemplatedForm == null) (function() {
             };
         }
 
-        var self = this;
         var tplArgs = callbacks.onBefInit.call(this, styles);
         var tpl = new TemplatedForm.Template(container, listTpl, tplArgs);
         tpl.init(true);
@@ -459,6 +458,8 @@ if (GLOBAL.TemplatedForm == null) (function() {
         tplForm.formData(listData);
         if ( !Array.isArray(listData) )
             tplForm.domTpl.idx = 0;
+        this.itemCount = tplForm.domItems.length;
+        var self = this;
 
         // @param idx - the index of list-item.
         // [@param cb] - a callback function() or bool value to indicate if
@@ -511,12 +512,12 @@ if (GLOBAL.TemplatedForm == null) (function() {
                 if (onAddDomItem)
                     onAddDomItem.call(this, dataObj, i);
             };
+            tplForm.domItems = null;
             tplForm.formData(itemData);
             if ( !Array.isArray(itemData) )
                 tplForm.domTpl.idx = itemIdxOff;
-            tplForm.domItems = formItems.concat(
-                Array.isArray(itemData)? tplForm.domItems: tplForm.domTpl
-            );
+            this.itemCount += tplForm.domItems.length;
+            tplForm.domItems = formItems.concat(tplForm.domItems);
         };
 
         // @param idx - the index of list-item.
@@ -540,6 +541,7 @@ if (GLOBAL.TemplatedForm == null) (function() {
                 } else {
                     tplForm.domTpl = this.domSel = domItem;
                     tplForm.domItems = [domItem];
+                    domItem.idx = 0;
                     if (emptyData) {
                         if (emptyData.call)
                             emptyData.call(tplForm);
@@ -549,6 +551,7 @@ if (GLOBAL.TemplatedForm == null) (function() {
                         tplForm.domTpl.style.visibility = "hidden";
                     }
                 }
+                --this.itemCount;
             }
         };
 
@@ -575,13 +578,14 @@ if (GLOBAL.TemplatedForm == null) (function() {
             tplForm.domTpl.idx = idx;
         };
 
-        this.maxItemIdx = function() {
-            return tplForm.domItems? tplForm.domItems.length - 1: -1;
+        this.idxEnd = function() {
+            return tplForm.domItems? tplForm.domItems.length: 0;
         };
         this.itemData = function(idx) {
-            return (
-                tplForm.domItems && tplForm.domItems[idx]
-            )? tplForm.formData(idx): null;
+            return this.validateItem(idx)? tplForm.formData(idx): null;
+        };
+        this.validateItem = function(idx) {
+            return (tplForm.domItems && tplForm.domItems[idx]);
         };
     };
 

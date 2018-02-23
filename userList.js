@@ -53,15 +53,21 @@ if (TemplatedForm.UserList == null) {
                 this.listView.append(userInfo);
             }
         };
-        this.remove = function(idx) {
-            if (this.listView)
-                this.listView.remove(idx);
-        };
-        this.maxUserIdx = function() {
-            return this.listView? this.listView.maxItemIdx(): -1;
-        };
-        this.userInfo = function(idx) {
-            return this.listView? this.listView.itemData(idx): null;
-        };
+    };
+    TemplatedForm.UserList.prototype.remove = function(idx) {
+        if (this.listView)
+            this.listView.remove(idx);
+    };
+    TemplatedForm.UserList.prototype.idxEnd = function() {
+        return this.listView? this.listView.idxEnd(): 0;
+    };
+    TemplatedForm.UserList.prototype.userInfo = function(idx) {
+        return this.listView? this.listView.itemData(idx): null;
+    };
+    TemplatedForm.UserList.prototype.checkUserInfo = function(idx) {
+        return this.listView? this.listView.validateItem(idx): false;
+    };
+    TemplatedForm.UserList.prototype.userInfoCount = function() {
+        return this.listView? this.listView.itemCount: 0;
     };
 }
