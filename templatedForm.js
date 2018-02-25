@@ -28,6 +28,22 @@ if (GLOBAL.TemplatedForm == null) (function() {
         return ret;
     };
 
+    // @param target - the object or array for check.
+    TemplatedForm.isEmpty = function(target) {
+        if ( Array.isArray(target) )
+            return (target.length == 0);
+        for (var k in target)
+            return false;
+        return true;
+    };
+
+    // @param path - the path for getting parent.
+    TemplatedForm.parentPath = function(path) {
+        var i = path.length - 1;
+        while ( path.charAt(i) == "/" ) --i;
+        return path.substring( 0, path.lastIndexOf("/", i) );
+    };
+
     // @param target - the JS object for getting/setting the value.
     // @param refPath - the ref-path of the value.
     // [@param fieldVal] - the field value.
@@ -267,7 +283,7 @@ if (GLOBAL.TemplatedForm == null) (function() {
     // @param tpl - the template for load.
     // @param pathAttr - the attribute name of the file path.
     // [@param container] - the container for load.
-    TemplatedForm.dynamicLoad = function(tpl, pathAttr, container) {
+    TemplatedForm.dynamicLoad = function(tpl, pathAttr, onLoad, container) {
         var tagName = Object.keys(tpl)[0];
         var tplAttr = tpl[tagName].$;
         var filePath = tplAttr[pathAttr];
@@ -278,7 +294,7 @@ if (GLOBAL.TemplatedForm == null) (function() {
             var loadedPath = domLoaded[i][pathAttr];
             s = loadedPath.lastIndexOf("/") + 1;
             var loadedFile = (s > 0)? loadedPath.substring(s): loadedPath;
-            if (fileName === loadedFile) {
+            if (fileName === loadedFile && domLoaded[i].loaded) {
                 // loaded:
                 tagName = null;
                 break;
@@ -287,10 +303,15 @@ if (GLOBAL.TemplatedForm == null) (function() {
         if (tagName) {
             if (container == null)
                 container = this.DOCX.head;
+            tplAttr.onload = function() {
+                this.loaded = true;
+                if (onLoad)
+                    onLoad.call(this);
+            }
             this.obj2html(tpl, container);
-        } else if (tplAttr.onload) {
+        } else if (onLoad) {
             // set timeout to avoid dead-loop.
-            setTimeout(tplAttr.onload);
+            setTimeout(onLoad);
         }
     };
 
@@ -301,10 +322,9 @@ if (GLOBAL.TemplatedForm == null) (function() {
         this.dynamicLoad({
             link: {$:{
                 rel: "stylesheet",
-                href: filePath,
-                onload: (onLoad? onLoad: "")
+                href: filePath
             }}
-        }, "href", container);
+        }, "href", onLoad, container);
     };
 
     // @param filePath - the file path for load.
@@ -314,10 +334,9 @@ if (GLOBAL.TemplatedForm == null) (function() {
         this.dynamicLoad({
             script: {$:{
                 type: "text/javascript",
-                src: filePath,
-                onload: (onLoad? onLoad: "")
+                src: filePath
             }}
-        }, "src", container);
+        }, "src", onLoad, container);
     };
 
     // @param layoutDef - definitions of layout: {
@@ -398,6 +417,7 @@ if (GLOBAL.TemplatedForm == null) (function() {
     //    itemStyle: String,    // the class name of list-item.
     //    itemStyleSel: String, // the class name of selected list-item.
     //    fieldMap: String,     // the pairs of fieldName.
+    //    isTiled: Boolean,     // indicates if the list is tiled.
     // }
     // @param container - the container id or element.
     // [@param callbacks] - the callbacks: {
@@ -521,7 +541,7 @@ if (GLOBAL.TemplatedForm == null) (function() {
         };
 
         // @param idx - the index of list-item.
-        // @param emptyData - the item-data or callback when removed all items.
+        // [@param emptyData] - the data or callback when removed all items.
         this.remove = function(idx, emptyData) {
             var domItem = tplForm.domItems[idx];
             if (domItem) {

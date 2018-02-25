@@ -1,4 +1,23 @@
+// @author: Rick Li
+// @email: 18611924492@163.com
+// @version: 1.0
+// @licence: BSD
+// @remark: a module to render user-list.
+
 if (TemplatedForm.UserList == null) {
+    // @param styles - the styles: {
+    //    itemStyle: String,     // the class name of list-item.
+    //    itemStyleSel: String,  // the class name of selected list-item.
+    //    portraitStyle: String, // the class name of user-portrait.
+    //    nameStyle: String,     // the class name of user-name.
+    //    statStyle: String      // the class name of user-status.
+    //    isTiled: Boolean,      // indicates if the list is tiled.
+    // }
+    // @param container - the container id or element.
+    // [@param callbacks] - the callbacks: {
+    //    onSetStat: function(),
+    //    onSel: function()
+    // }
     TemplatedForm.UserList = function(styles, container, callbacks) {
         var listTpl = function(tplArgs) {
             this.div = {

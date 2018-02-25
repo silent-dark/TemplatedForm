@@ -53,6 +53,11 @@ if (TemplatedForm.selView == null) (function() {
             }
         }, styles);
     };
+    var getFormTpl = function() {
+        this.domTpl.style.position = "relative";
+        this.domTpl.style.whiteSpace = "nowrap";
+        return this.domTpl.lastChild.lastChild;
+    };
     // @param values - the values for render.
     // @param styles - the styles of select: {
     //    bodyStyle: String,   // the class name of sel-body.
@@ -66,9 +71,7 @@ if (TemplatedForm.selView == null) (function() {
     TemplatedForm.selView = function(values, styles, container, onSel) {
         return new TemplatedForm.ListView(values, styles, container, {
             onBefInit: getTplArgs,
-            onBefRender: function() {
-                return this.domTpl.lastChild.lastChild;
-            },
+            onBefRender: getFormTpl,
             'onSel': onSel
         }, selTpl);
     };
