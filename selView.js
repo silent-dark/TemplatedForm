@@ -12,10 +12,9 @@ if (TemplatedForm.selView == null) (function() {
                 onclick: function() {
                     var domList = this.nextSibling;
                     domList.style.display = "block";
-                    domList.style.width = this.clientHeight.toString() + "px";
                     if (domList.getAttribute("posOff") == -1) {
                         domList.style.top = (
-                            -domList.clientHeight
+                            -(domList.clientHeight + 1)
                         ).toString() + "px";
                     }
                     domList.focus();

@@ -15,7 +15,7 @@ if (TemplatedForm.UserList == null) {
     // }
     // @param container - the container id or element.
     // [@param callbacks] - the callbacks: {
-    //    onSetStat: function(),
+    //    onRenderStat: function(),
     //    onSel: function()
     // }
     TemplatedForm.UserList = function(styles, container, callbacks) {
@@ -54,8 +54,8 @@ if (TemplatedForm.UserList == null) {
                 } else {
                     // set:
                     this.stat = stat;
-                    if (callbacks.onSetStat)
-                        callbacks.onSetStat.call(this);
+                    if (callbacks.onRenderStat)
+                        callbacks.onRenderStat.call(this);
                 }
             }
             return this.domTpl.lastChild;
@@ -88,5 +88,9 @@ if (TemplatedForm.UserList == null) {
     };
     TemplatedForm.UserList.prototype.userInfoCount = function() {
         return this.listView? this.listView.itemCount: 0;
+    };
+    TemplatedForm.UserList.prototype.replace = function(idx, userInfo) {
+        if (this.listView)
+            this.listView.update(idx, userInfo);
     };
 }

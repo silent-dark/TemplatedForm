@@ -468,6 +468,7 @@ if (GLOBAL.TemplatedForm == null) (function() {
         var tpl = new TemplatedForm.Template(container, listTpl, tplArgs);
         tpl.init(true);
         var tplForm = this.tplForm = tpl.forms[0];
+        tplForm.domTpl.style.verticalAlign = "top";
         tplForm.domTpl = this.domSel = callbacks.onBefRender.call(tplForm);
         var onAddDomItem = tplForm.onAddDomItem;
         tplForm.onAddDomItem = function(dataObj, i) {

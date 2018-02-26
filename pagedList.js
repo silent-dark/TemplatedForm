@@ -26,7 +26,9 @@ if (TemplatedForm.pagedList == null) {
     {
         if (listRender == null) {
             listRender = function(domList) {
-                return new TemplatedForm.ListView(values, styles, domList);
+                container.listView = new TemplatedForm.ListView(
+                    values, styles, domList
+                );
             };
         }
         if (pageBarOpt == null)
@@ -49,15 +51,20 @@ if (TemplatedForm.pagedList == null) {
             className: styles.pageBarStyle
         }, {
             moduleName: function(domList) {
-                domList.listView = listRender(domList);
-                var domPageBar = domList.previousSibling;
-                if (domList.scrollHeight > domList.clientHeight) {
-                    domList.style.height = (
-                        domList.clientHeight - domPageBar.clientHeight
-                    ).toString() + "px";
-                } else {
-                    domPageBar.style.display = "none";
-                }
+                domList.parentNode.refreshPageBar = function() {
+                    var domPageBar = domList.previousSibling;
+                    if (domList.scrollHeight > domList.clientHeight) {
+                        domPageBar.style.display = "block";
+                        domList.style.height = (
+                            domList.clientHeight - domPageBar.clientHeight
+                        ).toString() + "px";
+                    } else {
+                        domPageBar.style.display = "none";
+                    }
+                };
+                domList.style.overflowY = "auto";
+                listRender(domList);
+                domList.parentNode.refreshPageBar();
             },
             className: styles.listStyle
         }];
