@@ -89,6 +89,9 @@ if (TemplatedForm.UserList == null) {
     TemplatedForm.UserList.prototype.userInfoCount = function() {
         return this.listView? this.listView.itemCount: 0;
     };
+    TemplatedForm.UserList.prototype.domItems = function() {
+        return this.listView? this.listView.tplForm.domItems: null;
+    };
     TemplatedForm.UserList.prototype.replace = function(idx, userInfo) {
         if (this.listView)
             this.listView.update(idx, userInfo);

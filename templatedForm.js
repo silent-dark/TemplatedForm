@@ -480,6 +480,7 @@ if (GLOBAL.TemplatedForm == null) (function() {
         if ( !Array.isArray(listData) )
             tplForm.domTpl.idx = 0;
         this.itemCount = tplForm.domItems.length;
+        this.onSel = callbacks.onSel;
         var self = this;
 
         // @param idx - the index of list-item.
@@ -498,7 +499,6 @@ if (GLOBAL.TemplatedForm == null) (function() {
                 this.onSel = callbacks.onSel;
             tplArgs.onSetSelIdx.call(tplForm.domItems[idx]);
         };
-        this.setSelIdx(0);
 
         // @param formItems - the reference of tplForm.domItems.
         // @param posBef - the position where the cloned tplForm.domTpl will be
@@ -538,7 +538,8 @@ if (GLOBAL.TemplatedForm == null) (function() {
             if ( !Array.isArray(itemData) )
                 tplForm.domTpl.idx = itemIdxOff;
             this.itemCount += tplForm.domItems.length;
-            tplForm.domItems = formItems.concat(tplForm.domItems);
+            if (itemIdxOff > 0)
+                tplForm.domItems = formItems.concat(tplForm.domItems);
         };
 
         // @param idx - the index of list-item.

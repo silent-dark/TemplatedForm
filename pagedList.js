@@ -51,14 +51,19 @@ if (TemplatedForm.pagedList == null) {
             className: styles.pageBarStyle
         }, {
             moduleName: function(domList) {
+                domList.och = domList.clientHeight;
                 domList.parentNode.refreshPageBar = function() {
                     var domPageBar = domList.previousSibling;
                     if (domList.scrollHeight > domList.clientHeight) {
                         domPageBar.style.display = "block";
-                        domList.style.height = (
-                            domList.clientHeight - domPageBar.clientHeight
-                        ).toString() + "px";
+                        if (domList.och == domList.clientHeight) {
+                            domList.style.height = (
+                                domList.clientHeight - domPageBar.offsetHeight
+                            ).toString() + "px";
+                        }
                     } else {
+                        if (domList.och != domList.clientHeight)
+                            domList.style.height = domList.och.toString() +"px";
                         domPageBar.style.display = "none";
                     }
                 };
