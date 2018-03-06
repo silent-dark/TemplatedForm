@@ -33,8 +33,6 @@ if (TemplatedForm.pagedList == null) {
         }
         if (pageBarOpt == null)
             pageBarOpt = {};
-        if (!pageBarOpt.jsFile)
-            pageBarOpt.jsFile = "/js/common/pageBar.js";
         var thisLayout = [{
             moduleName: function(domPageBar) {
                 TemplatedForm.pageBar({
@@ -47,11 +45,9 @@ if (TemplatedForm.pagedList == null) {
                     gapStyle: styles.pageGapStyle
                 }, domPageBar, pageBarOpt.btnNames);
             },
-            jsFile: pageBarOpt.jsFile,
             className: styles.pageBarStyle
         }, {
             moduleName: function(domList) {
-                domList.och = domList.clientHeight;
                 domList.parentNode.refreshPageBar = function() {
                     var domPageBar = domList.previousSibling;
                     if (domList.scrollHeight > domList.clientHeight) {
@@ -69,6 +65,7 @@ if (TemplatedForm.pagedList == null) {
                 };
                 domList.style.overflowY = "auto";
                 listRender(domList);
+                domList.och = domList.clientHeight;
                 domList.parentNode.refreshPageBar();
             },
             className: styles.listStyle
