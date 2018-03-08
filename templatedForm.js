@@ -5,23 +5,23 @@
 // @remark: a module for templating view layer.
 
 var GLOBAL = window;
-if (GLOBAL.TemplatedForm == null) (function() {
+if(GLOBAL.TemplatedForm == null)(function() {
     var TemplatedForm = {
         DOCX: document
     };
 
     // @param target - the element id or object.
     TemplatedForm.getDomElement = function(target) {
-        return (
+        return(
             target instanceof Element || target.getAttribute
-        )? target: this.DOCX.getElementById(target);
+        ) ? target : this.DOCX.getElementById(target);
     };
 
     // @param length - the length of the random string.
     TemplatedForm.randomString = function(length) {
         const kAvailableChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         var ret = "";
-        for (var i = 0; i < length; ++i) {
+        for(var i = 0; i < length; ++i) {
             var x = Math.floor(Math.random() * kAvailableChars.length);
             ret += kAvailableChars.charAt(x);
         }
@@ -30,9 +30,9 @@ if (GLOBAL.TemplatedForm == null) (function() {
 
     // @param target - the object or array for check.
     TemplatedForm.isEmpty = function(target) {
-        if ( Array.isArray(target) )
-            return (target.length == 0);
-        for (var k in target)
+        if(Array.isArray(target))
+            return(target.length == 0);
+        for(var k in target)
             return false;
         return true;
     };
@@ -40,8 +40,8 @@ if (GLOBAL.TemplatedForm == null) (function() {
     // @param path - the path for getting parent.
     TemplatedForm.parentPath = function(path) {
         var i = path.length - 1;
-        while ( path.charAt(i) == "/" ) --i;
-        return path.substring( 0, path.lastIndexOf("/", i) );
+        while(path.charAt(i) == "/") --i;
+        return path.substring(0, path.lastIndexOf("/", i));
     };
 
     // @param target - the JS object for getting/setting the value.
@@ -51,33 +51,33 @@ if (GLOBAL.TemplatedForm == null) (function() {
         var subNames = refPath.split(".");
         var field = target;
         var k = subNames[0];
-        for (var i = 0; i < subNames.length; ++i) {
-            if (i > 0) {
-                if (field[k] == null)
+        for(var i = 0; i < subNames.length; ++i) {
+            if(i > 0) {
+                if(field[k] == null)
                     field[k] = {};
                 field = field[k];
                 k = subNames[i];
             }
-            if ( Array.isArray(field) )
+            if(Array.isArray(field))
                 throw TypeError("array is unsupported!");
         }
-        if (fieldVal == null)
-            return field[k];        // get
+        if(fieldVal == null)
+            return field[k]; // get
         else
-            field[k] = fieldVal;    // set
+            field[k] = fieldVal; // set
     };
 
     // @param obj - the object for convert.
     // @param outHtml - the out element for convert.
     TemplatedForm.obj2html = function(obj, outHtml) {
-        for (var tagName in obj) {
-            if (tagName === "$") {
-                for (var attrName in obj["$"]) {
+        for(var tagName in obj) {
+            if(tagName === "$") {
+                for(var attrName in obj["$"]) {
                     var attrVal = obj["$"][attrName];
-                    if (attrName === "text") {
+                    if(attrName === "text") {
                         outHtml.textContent = attrVal;
                     } else {
-                        if (typeof attrVal === "function") {
+                        if(typeof attrVal === "function") {
                             var func = "$" + this.randomString(12);
                             GLOBAL[func] = attrVal;
                             attrVal = func + ".apply(this,arguments);";
@@ -87,9 +87,9 @@ if (GLOBAL.TemplatedForm == null) (function() {
                 }
             } else {
                 var objArgs = obj[tagName];
-                if ( !Array.isArray(objArgs) )
+                if(!Array.isArray(objArgs))
                     objArgs = [objArgs];
-                for (var i = 0; i < objArgs.length; ++i) {
+                for(var i = 0; i < objArgs.length; ++i) {
                     var subNode = this.DOCX.createElement(tagName);
                     this.obj2html(objArgs[i], subNode);
                     outHtml.appendChild(subNode);
@@ -108,20 +108,20 @@ if (GLOBAL.TemplatedForm == null) (function() {
         //this.onAddDomItem = function(dataObj, i) {
         //    // use this.domItems[i] for getting the dom object;
         //};
-        if (onAddDomItem && onAddDomItem.call == null) {
+        if(onAddDomItem && onAddDomItem.call == null) {
             fieldNameAlias = onAddDomItem;
             onAddDomItem = null;
         }
         this.onAddDomItem = onAddDomItem;
-        this.fieldNameAlias = fieldNameAlias? fieldNameAlias: "fieldName";
+        this.fieldNameAlias = fieldNameAlias ? fieldNameAlias : "fieldName";
         this.valAttrEvals = {};
     };
 
     // @param domObj - the element of the default evaluator.
     Form.prototype.defaultValAttrEval = function(domObj) {
         var kDefaultValAttrEvals = ["value", "textContent", "innerHTML"];
-        for (var i = 0; i < kDefaultValAttrEvals.length; ++i) {
-            if (domObj[ kDefaultValAttrEvals[i] ] != null)
+        for(var i = 0; i < kDefaultValAttrEvals.length; ++i) {
+            if(domObj[kDefaultValAttrEvals[i]] != null)
                 return kDefaultValAttrEvals[i];
         }
         return null;
@@ -133,17 +133,16 @@ if (GLOBAL.TemplatedForm == null) (function() {
     Form.prototype.valAttrData = function(target, fieldPair, attrVal) {
         var pairItems = (
             typeof fieldPair === "string"
-        )? fieldPair.split(":"): fieldPair;
+        ) ? fieldPair.split(":") : fieldPair;
         var attrEval = (
             pairItems.length > 1 && pairItems[1] !== "function"
-        )? pairItems[1]: this.valAttrEvals[ pairItems[0] ];
-        if (attrEval) {
-            if (attrEval.call == null && target.getAttribute(attrEval) != null)
-            {
+        ) ? pairItems[1] : this.valAttrEvals[pairItems[0]];
+        if(attrEval) {
+            if(attrEval.call == null && target.getAttribute(attrEval) != null) {
                 var attrName = attrEval;
                 attrEval = function(attrVal) {
-                    if (attrVal == null)
-                        return target.getAttribute(attrName);   // get
+                    if(attrVal == null)
+                        return target.getAttribute(attrName); // get
                     else
                         target.setAttribute(attrName, attrVal); // set
                 };
@@ -151,9 +150,9 @@ if (GLOBAL.TemplatedForm == null) (function() {
         } else {
             attrEval = this.defaultValAttrEval(target);
         }
-        return (
+        return(
             attrEval.call
-        )? attrEval.call(target, attrVal): TemplatedForm.fieldData(
+        ) ? attrEval.call(target, attrVal) : TemplatedForm.fieldData(
             target, attrEval, attrVal
         );
     };
@@ -161,19 +160,17 @@ if (GLOBAL.TemplatedForm == null) (function() {
     // @param domObj - the element for getting/setting form data.
     // @param cb - the callback for getting/setting form data.
     Form.prototype.mapping = function(domObj, cb) {
-        if (domObj instanceof Element || domObj.getAttribute) {
+        if(domObj instanceof Element || domObj.getAttribute) {
             var fieldMapping = domObj.getAttribute(this.fieldNameAlias);
-            if (fieldMapping) {
+            if(fieldMapping) {
                 var fieldPairs = fieldMapping.split(";");
-                for (var i = 0; i < fieldPairs.length; ++i) {
-                    if (fieldPairs[i])
-                        cb.call( this, domObj, fieldPairs[i].split(":") );
+                for(var i = 0; i < fieldPairs.length; ++i) {
+                    if(fieldPairs[i])
+                        cb.call(this, domObj, fieldPairs[i].split(":"));
                 }
             }
-            if ( domObj.hasChildNodes() ) {
-                for (var subNode = domObj.firstChild;
-                    subNode; subNode = subNode.nextSibling)
-                {
+            if(domObj.hasChildNodes()) {
+                for(var subNode = domObj.firstChild; subNode; subNode = subNode.nextSibling) {
                     this.mapping(subNode, cb);
                 }
             }
@@ -183,11 +180,11 @@ if (GLOBAL.TemplatedForm == null) (function() {
     // @param domTpl - the element for getting/setting form data.
     // @param dataObj - the data object for getting/setting form data.
     Form.prototype.mappingData = function(domTpl, dataObj) {
-        if (dataObj == null) {
+        if(dataObj == null) {
             // get:
             var outObj = {};
             this.mapping(domTpl, function(domObj, pairItems) {
-                if ( TemplatedForm.fieldData(outObj, pairItems[0]) != null )
+                if(TemplatedForm.fieldData(outObj, pairItems[0]) != null)
                     throw TypeError("array is unsupported!");
                 TemplatedForm.fieldData(
                     outObj, pairItems[0], this.valAttrData(domObj, pairItems)
@@ -196,7 +193,7 @@ if (GLOBAL.TemplatedForm == null) (function() {
             return outObj;
         } else {
             // set:
-            if (this.domItems == null)
+            if(this.domItems == null)
                 this.domItems = [domTpl];
             this.mapping(domTpl, function(domObj, pairItems) {
                 this.valAttrData(
@@ -213,25 +210,23 @@ if (GLOBAL.TemplatedForm == null) (function() {
         // reset owner:
         var domOwner = domTpl.parentNode;
         var subNode = domOwner.lastChild;
-        for (var nextNode = null;
-            subNode && subNode != domTpl; subNode = nextNode)
-        {
+        for(var nextNode = null; subNode && subNode != domTpl; subNode = nextNode) {
             nextNode = subNode.previousSibling;
             domOwner.removeChild(subNode);
         }
         // >>>>>>>>>>>> done.
         var domItem = domTpl;
         this.domItems = new Array(dataArray.length);
-        for (var i = 0; i < dataArray.length; ++i) {
-            if (i > 0) {
+        for(var i = 0; i < dataArray.length; ++i) {
+            if(i > 0) {
                 domItem = domTpl.cloneNode(true);
                 domItem.removeAttribute("id");
             }
             this.mappingData(domItem, dataArray[i]);
             this.domItems[i] = domItem;
-            if (this.onAddDomItem)
+            if(this.onAddDomItem)
                 this.onAddDomItem.call(this, dataArray[i], i);
-            if (i > 0)
+            if(i > 0)
                 domOwner.appendChild(domItem);
         }
     };
@@ -239,11 +234,11 @@ if (GLOBAL.TemplatedForm == null) (function() {
     // [@param dataArg] - the data object for setting form data or the index for
     //                    getting form data.
     Form.prototype.formData = function(dataArg) {
-        if (dataArg == null)
+        if(dataArg == null)
             return this.mappingData(this.domTpl);
-        else if ( Array.isArray(dataArg) )
+        else if(Array.isArray(dataArg))
             this.mappingArray(this.domTpl, dataArg);
-        else if (typeof dataArg === "number")
+        else if(typeof dataArg === "number")
             return this.mappingData(this.domItems[dataArg]);
         else
             this.mappingData(this.domTpl, dataArg);
@@ -254,9 +249,8 @@ if (GLOBAL.TemplatedForm == null) (function() {
     // [@param tplArgs] - the args for constructing the template, ignore if
     //                    tplConstructor is object.
     // [@param fieldNameAlias] - for naming an alias of 'fieldName' attribute.
-    var Template = function(container, tplConstructor, tplArgs, fieldNameAlias)
-    {
-        if (tplConstructor.call) {
+    var Template = function(container, tplConstructor, tplArgs, fieldNameAlias) {
+        if(tplConstructor.call) {
             this.tplObj = {};
             tplConstructor.call(this.tplObj, tplArgs);
         } else {
@@ -265,17 +259,17 @@ if (GLOBAL.TemplatedForm == null) (function() {
             tplArgs = undefined;
         }
         fieldNameAlias = new Array().concat(
-            fieldNameAlias? fieldNameAlias: "fieldName"
+            fieldNameAlias ? fieldNameAlias : "fieldName"
         );
         this.forms = new Array(fieldNameAlias.length);
-        for (var i = 0; i < fieldNameAlias.length; ++i)
+        for(var i = 0; i < fieldNameAlias.length; ++i)
             this.forms[i] = new Form(container, fieldNameAlias[i]);
     };
 
     // @param reset - indicates if clear the innerHTML of the container.
     Template.prototype.init = function(reset) {
         var domTpl = this.forms[0].domTpl;
-        if (reset)
+        if(reset)
             domTpl.innerHTML = "";
         TemplatedForm.obj2html(this.tplObj, domTpl);
     };
@@ -288,28 +282,28 @@ if (GLOBAL.TemplatedForm == null) (function() {
         var tplAttr = tpl[tagName].$;
         var filePath = tplAttr[pathAttr];
         var s = filePath.lastIndexOf("/") + 1;
-        var fileName = (s > 0)? filePath.substring(s): filePath;
+        var fileName = (s > 0) ? filePath.substring(s) : filePath;
         var domLoaded = this.DOCX.getElementsByTagName(tagName);
-        for (var i = 0; i < domLoaded.length; ++i) {
+        for(var i = 0; i < domLoaded.length; ++i) {
             var loadedPath = domLoaded[i][pathAttr];
             s = loadedPath.lastIndexOf("/") + 1;
-            var loadedFile = (s > 0)? loadedPath.substring(s): loadedPath;
-            if (fileName === loadedFile && domLoaded[i].loaded) {
+            var loadedFile = (s > 0) ? loadedPath.substring(s) : loadedPath;
+            if(fileName === loadedFile && domLoaded[i].loaded) {
                 // loaded:
                 tagName = null;
                 break;
             }
         }
-        if (tagName) {
-            if (container == null)
+        if(tagName) {
+            if(container == null)
                 container = this.DOCX.head;
             tplAttr.onload = function() {
                 this.loaded = true;
-                if (onLoad)
+                if(onLoad)
                     onLoad.call(this);
             }
             this.obj2html(tpl, container);
-        } else if (onLoad) {
+        } else if(onLoad) {
             // set timeout to avoid dead-loop.
             setTimeout(onLoad);
         }
@@ -320,10 +314,12 @@ if (GLOBAL.TemplatedForm == null) (function() {
     // [@param container] - the container for load.
     TemplatedForm.loadCSS = function(filePath, onLoad, container) {
         this.dynamicLoad({
-            link: {$:{
-                rel: "stylesheet",
-                href: filePath
-            }}
+            link: {
+                $: {
+                    rel: "stylesheet",
+                    href: filePath
+                }
+            }
         }, "href", onLoad, container);
     };
 
@@ -332,10 +328,12 @@ if (GLOBAL.TemplatedForm == null) (function() {
     // [@param container] - the container for load.
     TemplatedForm.loadJS = function(filePath, onLoad, container) {
         this.dynamicLoad({
-            script: {$:{
-                type: "text/javascript",
-                src: filePath
-            }}
+            script: {
+                $: {
+                    type: "text/javascript",
+                    src: filePath
+                }
+            }
         }, "src", onLoad, container);
     };
 
@@ -355,57 +353,59 @@ if (GLOBAL.TemplatedForm == null) (function() {
     TemplatedForm.layout = function(layoutDef, container) {
         var self = this;
         var tpl = new TemplatedForm.Template(container, {
-            div: {$:{
-                fieldName: "moduleName;cssFile;jsFile;id:id;className:className;style:style;text;trigger"
-            }}
+            div: {
+                $: {
+                    fieldName: "moduleName;cssFile;jsFile;id:id;className:className;style:style;text;trigger"
+                }
+            }
         });
         tpl.init(true);
         var tplForm = tpl.forms[0];
         tplForm.domTpl = tplForm.domTpl.lastChild;
         tplForm.valAttrEvals["moduleName"] = function(module) {
-            if (module) {
+            if(module) {
                 var domDiv = this;
                 domDiv.invokeModule = function() {
                     try {
                         switch(typeof module) {
-                        case "string":
-                            eval(module)(domDiv);
-                            break;
-                        case "function":
-                            module(domDiv);
-                            break;
-                        default:
-                            console.log( new TypeError("unknown module!") );
+                            case "string":
+                                eval(module)(domDiv);
+                                break;
+                            case "function":
+                                module(domDiv);
+                                break;
+                            default:
+                                console.log(new TypeError("unknown module!"));
                         }
-                    } catch (err) {
+                    } catch(err) {
                         console.log(err);
                     }
                 };
             }
         };
         tplForm.valAttrEvals["cssFile"] = function(filePath) {
-            if (filePath)
+            if(filePath)
                 self.loadCSS(filePath);
         };
         tplForm.valAttrEvals["jsFile"] = function(filePath) {
-            if (filePath)
+            if(filePath)
                 this.myJS = filePath;
         };
         tplForm.valAttrEvals["trigger"] = function(eventName) {
             var domDiv = this;
-            if (eventName && eventName !== "onload") {
+            if(eventName && eventName !== "onload") {
                 var regEvent = function() {
-                    if (domDiv.invokeModule)
+                    if(domDiv.invokeModule)
                         domDiv[eventName] = domDiv.invokeModule;
                 };
-                if (domDiv.myJS)
+                if(domDiv.myJS)
                     self.loadJS(domDiv.myJS, regEvent);
                 else
                     regEvent();
             } else {
-                if (domDiv.myJS)
+                if(domDiv.myJS)
                     self.loadJS(domDiv.myJS, domDiv.invokeModule);
-                else if (domDiv.invokeModule)
+                else if(domDiv.invokeModule)
                     setTimeout(domDiv.invokeModule); // to avoid dead-loop.
             }
         };
@@ -426,39 +426,44 @@ if (GLOBAL.TemplatedForm == null) (function() {
     //    onSel: function()
     // }
     // [@param listTpl] - the tpl constructor (function).
+    TemplatedForm.getRowStyle = function(styleClass, rowNum) {
+        return Array.isArray(styleClass) ? styleClass[rowNum % styleClass.length] : styleClass;
+    }
     var ListView = function(listData, styles, container, callbacks, listTpl) {
-        if (callbacks == null)
+        if(callbacks == null)
             callbacks = {};
-        if (listTpl == null) {
+        if(listTpl == null) {
             listTpl = function(tplArgs) {
                 this.div = {
                     $: {
                         fieldName: tplArgs.fieldMap,
-                        'class': tplArgs.itemStyle,
+                        'class': TemplatedForm.getRowStyle(tplArgs.itemStyle,0),
                         onclick: tplArgs.onSetSelIdx
                     }
                 };
-                if (tplArgs.isTiled)
+                if(tplArgs.isTiled)
                     this.div.$.style = "display:inline-block";
             };
         }
-        if (callbacks.onBefInit == null) {
+        if(callbacks.onBefInit == null) {
             callbacks.onBefInit = function(styleArgs) {
                 var self = this;
                 return Object.assign({
                     onSetSelIdx: function() {
-                        if (self.domSel != this) {
-                            self.domSel.className = styleArgs.itemStyle;
+                        if(self.domSel != this) {
+                            self.domSel.className = TemplatedForm.getRowStyle(
+                                styleArgs.itemStyle, self.domSel.idx
+                            );
                             self.domSel = this;
                         }
                         this.className = styleArgs.itemStyleSel;
-                        if (self.onSel)
+                        if(self.onSel)
                             self.onSel.call(this);
                     }
                 }, styleArgs);
             };
         }
-        if (callbacks.onBefRender == null) {
+        if(callbacks.onBefRender == null) {
             callbacks.onBefRender = function() {
                 return this.domTpl.lastChild;
             };
@@ -473,11 +478,12 @@ if (GLOBAL.TemplatedForm == null) (function() {
         var onAddDomItem = tplForm.onAddDomItem;
         tplForm.onAddDomItem = function(dataObj, i) {
             this.domItems[i].idx = i;
-            if (onAddDomItem)
+            this.domItems[i].className = TemplatedForm.getRowStyle(styles.itemStyle, i);
+            if(onAddDomItem)
                 onAddDomItem.call(this, dataObj, i);
         };
         tplForm.formData(listData);
-        if ( !Array.isArray(listData) )
+        if(!Array.isArray(listData))
             tplForm.domTpl.idx = 0;
         this.itemCount = tplForm.domItems.length;
         this.onSel = callbacks.onSel;
@@ -487,13 +493,13 @@ if (GLOBAL.TemplatedForm == null) (function() {
         // [@param cb] - a callback function() or bool value to indicate if
         //               trigger the preset callback.
         this.setSelIdx = function(idx, cb) {
-            if (tplForm.domItems[idx] == null)
+            if(tplForm.domItems[idx] == null)
                 throw new ReferenceError("invalid index!");
-            if (cb == null)
+            if(cb == null)
                 this.onSel = callbacks.onSel;
-            else if (!cb)
+            else if(!cb)
                 this.onSel = null;
-            else if (cb.call)
+            else if(cb.call)
                 this.onSel = cb;
             else
                 this.onSel = callbacks.onSel;
@@ -507,12 +513,12 @@ if (GLOBAL.TemplatedForm == null) (function() {
         // @return the index offset.
         var cloneDomTpl = function(formItems, posBef) {
             var cloneTpl = tplForm.domTpl;
-            if (cloneTpl.style.visibility == "hidden") {
+            if(cloneTpl.style.visibility == "hidden") {
                 cloneTpl.style.visibility = "visible";
                 return 0;
             } else {
-                for (var i = 0; i < formItems.length; ++i) {
-                    if (formItems[i] != self.domSel && formItems[i]) {
+                for(var i = 0; i < formItems.length; ++i) {
+                    if(formItems[i] != self.domSel && formItems[i]) {
                         cloneTpl = formItems[i];
                         break;
                     }
@@ -530,15 +536,15 @@ if (GLOBAL.TemplatedForm == null) (function() {
             var itemIdxOff = cloneDomTpl(formItems, null);
             tplForm.onAddDomItem = function(dataObj, i) {
                 this.domItems[i].idx = itemIdxOff + i;
-                if (onAddDomItem)
+                if(onAddDomItem)
                     onAddDomItem.call(this, dataObj, i);
             };
             tplForm.domItems = null;
             tplForm.formData(itemData);
-            if ( !Array.isArray(itemData) )
+            if(!Array.isArray(itemData))
                 tplForm.domTpl.idx = itemIdxOff;
             this.itemCount += tplForm.domItems.length;
-            if (itemIdxOff > 0)
+            if(itemIdxOff > 0)
                 tplForm.domItems = formItems.concat(tplForm.domItems);
         };
 
@@ -546,17 +552,17 @@ if (GLOBAL.TemplatedForm == null) (function() {
         // [@param emptyData] - the data or callback when removed all items.
         this.remove = function(idx, emptyData) {
             var domItem = tplForm.domItems[idx];
-            if (domItem) {
-                if (domItem.parentNode.childNodes.length > 1) {
-                    if (this.domSel == domItem) {
+            if(domItem) {
+                if(domItem.parentNode.childNodes.length > 1) {
+                    if(this.domSel == domItem) {
                         this.domSel = (
                             domItem.previousSibling
-                        )? domItem.previousSibling: domItem.nextSibling;
+                        ) ? domItem.previousSibling : domItem.nextSibling;
                     }
-                    if (tplForm.domTpl == domItem) {
+                    if(tplForm.domTpl == domItem) {
                         tplForm.domTpl = (
                             domItem.previousSibling
-                        )? domItem.previousSibling: domItem.nextSibling;
+                        ) ? domItem.previousSibling : domItem.nextSibling;
                     }
                     domItem.parentNode.removeChild(domItem);
                     tplForm.domItems[idx] = null;
@@ -564,8 +570,8 @@ if (GLOBAL.TemplatedForm == null) (function() {
                     tplForm.domTpl = this.domSel = domItem;
                     tplForm.domItems = [domItem];
                     domItem.idx = 0;
-                    if (emptyData) {
-                        if (emptyData.call)
+                    if(emptyData) {
+                        if(emptyData.call)
                             emptyData.call(tplForm);
                         else
                             tplForm.formData(emptyData);
@@ -580,13 +586,13 @@ if (GLOBAL.TemplatedForm == null) (function() {
         // @param idx - the index of list-item.
         // @param itemData - the data for update.
         this.update = function(idx, itemData) {
-            if ( Array.isArray(itemData) )
+            if(Array.isArray(itemData))
                 throw new TypeError("invalid item-data!");
             var formItems = tplForm.domItems;
-            if (formItems[idx] == null) {
+            if(formItems[idx] == null) {
                 var posBef = null;
-                for (var i = idx + 1; i < formItems.length; ++i) {
-                    if (formItems[i]) {
+                for(var i = idx + 1; i < formItems.length; ++i) {
+                    if(formItems[i]) {
                         posBef = formItems[i];
                         break;
                     }
@@ -601,16 +607,15 @@ if (GLOBAL.TemplatedForm == null) (function() {
         };
 
         this.idxEnd = function() {
-            return tplForm.domItems? tplForm.domItems.length: 0;
+            return tplForm.domItems ? tplForm.domItems.length : 0;
         };
         this.itemData = function(idx) {
-            return this.validateItem(idx)? tplForm.formData(idx): null;
+            return this.validateItem(idx) ? tplForm.formData(idx) : null;
         };
         this.validateItem = function(idx) {
-            return (tplForm.domItems && tplForm.domItems[idx]);
+            return(tplForm.domItems && tplForm.domItems[idx]);
         };
     };
-
     TemplatedForm.Template = Template;
     TemplatedForm.Form = Form;
     TemplatedForm.ListView = ListView;

@@ -4,7 +4,7 @@
 // @licence: BSD
 // @remark: a module to render user-list.
 
-if (TemplatedForm.UserList == null) {
+if(TemplatedForm.UserList == null) {
     // @param styles - the styles: {
     //    itemStyle: String,     // the class name of list-item.
     //    itemStyleSel: String,  // the class name of selected list-item.
@@ -22,7 +22,7 @@ if (TemplatedForm.UserList == null) {
         var listTpl = function(tplArgs) {
             this.div = {
                 $: {
-                    'class': tplArgs.itemStyle,
+                    'class': TemplatedForm.getRowStyle(tplArgs.itemStyle, 0),
                     onclick: tplArgs.onSetSelIdx
                 },
                 span: [{
@@ -34,7 +34,7 @@ if (TemplatedForm.UserList == null) {
                 }, {
                     $: {
                         fieldName: "name",
-                        'class': tplArgs.nameStyle
+                        'class': TemplatedForm.getRowStyle(tplArgs.nameStyle, 0)
                     }
                 }, {
                     $: {
@@ -43,28 +43,34 @@ if (TemplatedForm.UserList == null) {
                     }
                 }]
             };
-            if (tplArgs.isTiled)
+            if(tplArgs.isTiled)
                 this.div.$.style = "display:inline-block";
         };
-        var setStatEval = function() {
+        var setStatEval = function(styles) {
+            this.onAddDomItem = function(dataObj, i) {
+                this.domItems[i].idx = i;
+                this.domItems[i].childNodes[1].className = TemplatedForm.getRowStyle(styles.nameStyle, i);
+            };
             this.valAttrEvals["stat"] = function(stat) {
-                if (stat == null) {
+                if(stat == null) {
                     // get:
                     return this.stat;
                 } else {
                     // set:
                     this.stat = stat;
-                    if (callbacks.onRenderStat)
+                    if(callbacks.onRenderStat)
                         callbacks.onRenderStat.call(this);
                 }
             }
             return this.domTpl.lastChild;
-        };
+        }
         this.add = function(userInfo) {
-            if (this.listView == null) {
+            if(this.listView == null) {
                 this.listView = new TemplatedForm.ListView(
                     userInfo, styles, container, {
-                        onBefRender: setStatEval,
+                        onBefRender: function() {
+                            return setStatEval.call(this, styles);
+                        },
                         onSel: callbacks.onSel
                     }, listTpl
                 );
@@ -74,26 +80,26 @@ if (TemplatedForm.UserList == null) {
         };
     };
     TemplatedForm.UserList.prototype.remove = function(idx) {
-        if (this.listView)
+        if(this.listView)
             this.listView.remove(idx);
     };
     TemplatedForm.UserList.prototype.idxEnd = function() {
-        return this.listView? this.listView.idxEnd(): 0;
+        return this.listView ? this.listView.idxEnd() : 0;
     };
     TemplatedForm.UserList.prototype.userInfo = function(idx) {
-        return this.listView? this.listView.itemData(idx): null;
+        return this.listView ? this.listView.itemData(idx) : null;
     };
     TemplatedForm.UserList.prototype.checkUserInfo = function(idx) {
-        return this.listView? this.listView.validateItem(idx): false;
+        return this.listView ? this.listView.validateItem(idx) : false;
     };
     TemplatedForm.UserList.prototype.userInfoCount = function() {
-        return this.listView? this.listView.itemCount: 0;
+        return this.listView ? this.listView.itemCount : 0;
     };
     TemplatedForm.UserList.prototype.domItems = function() {
-        return this.listView? this.listView.tplForm.domItems: null;
+        return this.listView ? this.listView.tplForm.domItems : null;
     };
     TemplatedForm.UserList.prototype.replace = function(idx, userInfo) {
-        if (this.listView)
+        if(this.listView)
             this.listView.update(idx, userInfo);
     };
 }

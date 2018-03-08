@@ -9,7 +9,7 @@ if (TemplatedForm.navList == null) (function() {
         this.div = {
             $: {
                 fieldName: "iconSrc:iconSrc;iconSrcSel:iconSrcSel;id:id",
-                'class': tplArgs.navStyle,
+                'class': TemplatedForm.getRowStyle(tplArgs.itemStyle, 0),
                 onclick: tplArgs.onSetSelIdx
             },
             span: [{
@@ -41,7 +41,7 @@ if (TemplatedForm.navList == null) (function() {
                 if (self.domSel != this) {
                     setItemStyles.call(
                         self.domSel,
-                        styles.navStyle,
+                        TemplatedForm.getRowStyle(styles.itemStyle, self.domSel.idx),
                         styles.navHighLight,
                         self.domSel.iconSrc
                     );
@@ -49,7 +49,7 @@ if (TemplatedForm.navList == null) (function() {
                 }
                 setItemStyles.call(
                     this,
-                    styles.navStyleSel,
+                    styles.itemStyleSel,
                     styles.navHighLightSel,
                     this.iconSrcSel
                 );
@@ -64,8 +64,8 @@ if (TemplatedForm.navList == null) (function() {
     //    iconSrcSel: "url(/img/home-red.png)"
     // }
     // @param styles - the styles of nav-list: {
-    //    navStyle: String,        // the class name of any nav-item.
-    //    navStyleSel: String,     // the class name of selected nav-item.
+    //    itemStyle: String,        // the class name of any nav-item.
+    //    itemStyleSel: String,     // the class name of selected nav-item.
     //    navHighLight: String,    // the class name of any highlight-tag.
     //    navHighLightSel: String, // the class name of selected highlight-tag.
     //    navIcon: String          // the class name of any nav-icon.
