@@ -276,6 +276,7 @@ if(GLOBAL.TemplatedForm == null)(function() {
 
     // @param tpl - the template for load.
     // @param pathAttr - the attribute name of the file path.
+    // [@param onLoad] - the callback on load.
     // [@param container] - the container for load.
     TemplatedForm.dynamicLoad = function(tpl, pathAttr, onLoad, container) {
         var tagName = Object.keys(tpl)[0];

@@ -159,11 +159,12 @@ TemplatedForm.fieldData(obj, "part2.y", "Y"); // 创建obj.part2.y并设置为"Y
 请参考layout函数的实现。
 
 ## TemplatedForm.dynamicLoad
-一个动态加载资源类Element的函数：function(tpl, pathAttr, container)。
+一个动态加载资源类Element的函数：function(tpl, pathAttr, onLoad, container)。
 
 ### 参数：
 * tpl - 描述该Element的对象（参考：obj2html函数的obj参数）。
 * pathAttr - 资源路径的属性名称。
+* `[onLoad]` - 加载成功后的回调函数（无参）。
 * `[container]` - 被加载DOM对象的container。
 
 ### 用法:
