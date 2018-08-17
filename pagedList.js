@@ -9,7 +9,7 @@ if (TemplatedForm.pagedList == null) {
     // @param styles - the styles: {
     //    pageBtnStyle: String, // the class name of page-bar button.
     //    pageGapStyle: String  // the class name of page-bar gap.
-    //    pageBarStyle: String, // the class name of page-bar.
+    //    pageBtnStyle: String, // the class name of page-bar.
     //    listStyle: String,    // the class name of list.
     //    itemStyle: String,    // the class name of list-item.
     //    itemStyleSel: String, // the class name of selected list-item.
@@ -17,12 +17,12 @@ if (TemplatedForm.pagedList == null) {
     // }
     // @param container - the container id or element.
     // [@param listRender] - the callback function(domList) to render list.
-    // [@param pageBarOpt] - the page-bar options: {
+    // [@param pageBtnOpt] - the page-bar options: {
     //    onInitGap: function(domGap),
     //    btnNames: [String]
     // }
     TemplatedForm.pagedList = function(
-        values, styles, container, listRender, pageBarOpt)
+        values, styles, container, listRender, pageBtnOpt)
     {
         if (listRender == null) {
             listRender = function(domList) {
@@ -31,43 +31,43 @@ if (TemplatedForm.pagedList == null) {
                 );
             };
         }
-        if (pageBarOpt == null)
-            pageBarOpt = {};
+        if (pageBtnOpt == null)
+            pageBtnOpt = {};
         var thisLayout = [{
-            moduleName: function(domPageBar) {
-                TemplatedForm.pageBar({
+            moduleName: function(domPageBtn) {
+                TemplatedForm.pageBtn({
                     getScrollView: function() {
-                        return domPageBar.nextSibling;
+                        return domPageBtn.nextSibling;
                     },
-                    onInitGap: pageBarOpt.onInitGap
+                    onInitGap: pageBtnOpt.onInitGap
                 }, {
                     btnStyle: styles.pageBtnStyle,
                     gapStyle: styles.pageGapStyle
-                }, domPageBar, pageBarOpt.btnNames);
-                domPageBar.style.display = "none";
+                }, domPageBtn, pageBtnOpt.btnNames);
+                domPageBtn.style.display = "none";
             },
-            className: styles.pageBarStyle
+            className: styles.pageBtnStyle
         }, {
             moduleName: function(domList) {
-                domList.parentNode.refreshPageBar = function() {
-                    var domPageBar = domList.previousSibling;
+                domList.parentNode.refreshPageBtn = function() {
+                    var domPageBtn = domList.previousSibling;
                     if (domList.scrollHeight > domList.clientHeight) {
-                        domPageBar.style.display = "block";
+                        domPageBtn.style.display = "block";
                         if (domList.style.height == domList.myHeight) {
                             domList.style.height = (
-                                domList.clientHeight - domPageBar.offsetHeight
+                                domList.clientHeight - domPageBtn.offsetHeight
                             ).toString() + "px";
                         }
                     } else {
                         if (domList.style.height != domList.myHeight)
                             domList.style.height = domList.myHeight;
-                        domPageBar.style.display = "none";
+                        domPageBtn.style.display = "none";
                     }
                 };
                 domList.style.overflowY = "auto";
                 listRender(domList);
                 domList.myHeight = domList.style.height;
-                domList.parentNode.refreshPageBar();
+                domList.parentNode.refreshPageBtn();
             },
             className: styles.listStyle
         }];

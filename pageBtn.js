@@ -4,7 +4,7 @@
 // @licence: BSD
 // @remark: a module to render page-bar.
 
-if (TemplatedForm.pageBar == null) {
+if (TemplatedForm.pageBtn == null) {
     // @param callbacks - the callbacks: {
     //    onPrePage: function(domBtn),
     //    onNextPage: function(domBtn),
@@ -17,7 +17,7 @@ if (TemplatedForm.pageBar == null) {
     // }
     // @param container - the container id or element.
     // [@param btnNames] - the array of button names.
-    TemplatedForm.pageBar = function(callbacks, styles, container, btnNames) {
+    TemplatedForm.pageBtn = function(callbacks, styles, container, btnNames) {
         var domScrollView = (
             callbacks.getScrollView
         )? callbacks.getScrollView(): null;

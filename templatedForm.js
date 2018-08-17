@@ -571,12 +571,18 @@ if (GLOBAL.TemplatedForm == null)(function() {
             var onAddDomItem = tplForm.onAddDomItem;
             tplForm.onAddDomItem = null;
             tplForm.domItems = null;
-            if (tplForm.domTpl.style.visibility == "hidden")
+            if (itemIdxOff > 0) {
+                var domOwner = tplForm.domTpl.parentNode;
+                tplForm.domTpl = tplForm.domTpl.cloneNode(true);
+                tplForm.domTpl.removeAttribute("id");
+                domOwner.appendChild(tplForm.domTpl);
+            } else if (tplForm.domTpl.style.visibility == "hidden") {
                 tplForm.domTpl.style.visibility = "visible";
+            }
             tplForm.formData(itemData);
-            this.itemCount += tplForm.domItems.length;
             if (itemIdxOff > 0)
                 tplForm.domItems = formItems.concat(tplForm.domItems);
+            this.itemCount = tplForm.domItems.length;
             if ( Array.isArray(itemData) ) {
                 for (var i = 0; i < itemData.length; ++i)
                     onAddDomItem.call(this, itemData[i], itemIdxOff + i);
