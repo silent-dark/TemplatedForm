@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>navTree</title>
+	<link rel="stylesheet" type="text/css" href="font-awesome-4.7.0/css/font-awesome.css">
+	<link rel="stylesheet" type="text/css" href="css/navTree.css">
+    <script src="jquery-ui-1.12.1/external/jquery/jquery-3.3.1.min.js"></script>
+    <script src="js/components/templatedForm.js"></script>
+    <script src="js/components/NavTree.js"></script>
+</head>
+<body>
+	<div id="navTree" class="nt-container"></div>
+</body>
+</html>
+<script>
+	/**
+	* 模拟JSON数据
+	**/
+	var JSON = [
+	  {
+	    id:'1',
+	    menuNam:'中国',
+	    url:'',
+	    hasIcon:false,
+	    iconClassName:'fa fa-gittip',
+	    hasAngle:true,
+	    children:[
+	      {
+	        id:'1-1',
+	        menuNam:'河北',
+	        url:'',
+	        hasIcon:true,
+	        iconClassName:'fa fa-github-alt',
+	        hasAngle:true,
+	        children:[
+	          {
+	            id:'1-1-1',
+	            menuNam:'涿州',
+	            url:'',
+	            hasIcon:true,
+	            iconClassName:'fa fa-first-order',
+	            hasAngle:false,
+	            onclick:function(id){
+	              console.log(id);
+	            }
+	          }
+	        ]
+	      },
+	      {
+	        id:'1-2',
+	        menuNam:'上海',
+	        url:'',
+	        hasIcon:true,
+	        iconClassName:'fa fa-github-alt',
+	        hasAngle:true,
+	        onclick:function(id){
+	          console.log(id);
+	        }
+	      }
+	    ]
+	  },
+	  {
+	    id:'2',
+	    menuNam:'美国',
+	    url:'',
+	    hasIcon:true,
+	    iconClassName:'fa fa-gittip',
+	    hasAngle:false,
+	    children:[
+	      {
+	        id:'2-1',
+	        menuNam:'加利福利亚',
+	        url:'',
+	        hasIcon:true,
+	        iconClassName:'fa fa-github-alt',
+	        hasAngle:true,
+	        children:[
+	          {
+	            id:'2-1-1',
+	            menuNam:'谁知道呀',
+	            url:'',
+	            hasIcon:true,
+	            iconClassName:'fa fa-first-order',
+	            hasAngle:false,
+	            onclick:function(id){
+	              console.log(id);
+	            }
+	          }
+	        ]
+	      },
+	      {
+	        id:'2-2',
+	        menuNam:'加利福利亚-隔壁',
+	        url:'',
+	        hasIcon:true,
+	        iconClassName:'fa fa-github-alt',
+	        hasAngle:true,
+	        onclick:function(id){
+	          console.log(id);
+	        }
+	      }
+	    ]
+	  },
+	  {
+	    id:'3',
+	    menuNam:'我家',
+	    url:'',
+	    hasIcon:true,
+	    iconClassName:'fa fa-gittip',
+	    hasAngle:false,
+	    onclick:function(idx){
+    		console.log(idx);
+        }
+	  },
+	  {
+	    id:'4',
+	    menuNam:'我家',
+	    url:'',
+	    hasIcon:true,
+	    iconClassName:'fa fa-gittip',
+	    hasAngle:false,
+	    onclick:function(idx){
+    		console.log(idx);
+        }
+	  },
+	  {
+	    id:'5',
+	    menuNam:'你家',
+	    url:'',
+	    hasIcon:true,
+	    iconClassName:'fa fa-gittip',
+	    hasAngle:false,
+	    onclick:function(idx){
+    		console.log(idx);
+        }
+	  }
+	];
+	var NavTree = new NavTree();
+
+	NavTree.init($('#navTree'),true,'active',true);
+	NavTree.setData(JSON);
+</script>

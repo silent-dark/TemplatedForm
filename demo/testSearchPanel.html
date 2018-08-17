@@ -1,0 +1,30 @@
+<html>
+<head>
+    <title>Test Detail View</title>
+	<meta charset="UTF-8">
+    <style>
+    .list-item { background-color: #f4f4f4; clear: both; }
+    .list-item .label { float: left; width: 100px; display: block; }
+    </style>
+    <link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="css/dvAppearances.css">
+    <script src="jquery-ui-1.12.1/external/jquery/jquery-3.3.1.min.js"></script>
+    <script src="jquery-ui-1.12.1/jquery-ui.min.js"></script>
+    <script src="js/components/templatedForm.js"></script>
+    <script src="js/components/DetailView.js"></script>
+    <script src="js/components/EditPanel.js"></script>
+    <script src="js/components/detailViewAppearances.js"></script>
+    <script src="js/components/SearchPanel.js"></script>
+</head>
+<body>
+    <div id="Container" style="background-color:gray"></div>
+    <script>
+        var container = document.getElementById("Container");
+        var searchPanel = new SearchPanel({});
+        searchPanel.onSearch = function(searchData) {
+            console.log(searchData)
+        }
+        searchPanel.render(container, null, {searchExp: "测试"});
+    </script>
+</body>
+</html>

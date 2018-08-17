@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>PageBar组件</title>
+	<link rel="stylesheet" type="text/css" href="css/pageBar.css">
+    <script src="jquery-ui-1.12.1/external/jquery/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="js/components/PageBar.js"></script>
+</head>
+<body>
+	
+<div id="PageBarDiv" class="pb-container"></div>
+
+</body>
+</html>
+<script type="text/javascript">
+	(new PageBar({
+        firstPage: true, lastPage: true, preGroup: true, nextGroup: true, prePage: true, nextPage: true
+    })).render($('#PageBarDiv'),48,10,function(idx){});
+</script>

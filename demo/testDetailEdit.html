@@ -1,0 +1,165 @@
+<html>
+<head>
+    <title>Test Detail View</title>
+	<meta charset="UTF-8">
+    <style>
+.title-bar {
+    float:right;
+    background-color: blue;
+}
+.contact-img {
+    float:left;
+    width: 100px;
+    height: 100%;
+    margin-right: 18px;
+}
+.contact-name {
+    font-size: 26px;
+    font-family: MicrosoftYaHei-Bold;
+}
+.contact-duty {
+    margin-bottom: 12px;
+}
+.contact-label {
+    font-family: FontAwesome;
+    width: 24px;
+    display: inline-block;
+}
+.dv-img {
+    width: 100%;
+    height: auto;
+}
+    </style>
+    <link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.css">
+    <script src="jquery-ui-1.12.1/external/jquery/jquery-3.3.1.min.js"></script>
+    <script src="js/components/templatedForm.js"></script>
+    <script src="js/components/DetailView.js"></script>
+    <script src="js/components/EditBar.js"></script>
+    <script src="js/components/DetailEdit.js"></script>
+</head>
+<body>
+    <div id="Container"></div>
+    <script>
+        var detailEdit = new DetailEdit([{
+            name: "contactPhoto",
+            styleOrClass: "contact-img",
+            valueAppearance: {
+                styleOrClass: "dv-img",
+                tagName: "img",
+                bind: "src",
+            },
+            format: function(dataObj, propName) {
+                var path = dataObj[propName];
+                return (typeof path == "object")? URL.createObjectURL(path): path;
+            }
+        }, {
+            name: "contactName",
+            styleOrClass: "contact-name",
+        }, {
+            name: "contactDuty",
+            styleOrClass: "contact-duty",
+        }, {
+            name: "contactItem",
+            labelStyleOrClass: "contact-label",
+        }, {
+            name: "textEdit",
+            valueAppearance: {
+                tagName: "input",
+                bind: "value",
+                propOrAttr: {
+                    type: "text"
+                },
+            }
+        }, {
+            name: "photoEdit",
+            valueAppearance: {
+                tagName: "input",
+                bind: "alt",
+                propOrAttr: {
+                    type: "file",
+                    accept: "image/*",
+                },
+            },
+            deformat: function(domFile) {
+                if (domFile.files.length > 0)
+                    return domFile.files[0];
+                return domFile.alt;
+            }
+        }], [{
+            styleOrClass: "title-bar",
+            btnStyleOrClasses: ["fa fa-save", "fa fa-remove"]
+        }, {
+            styleOrClass: "title-bar",
+            btnStyleOrClasses: ["fa fa-edit", "fa fa-trash"]
+        }]);
+
+        var container = document.getElementById("Container");
+        detailEdit.attach(container, [{
+            editBarIdx: 0,
+            dataFilters: [{
+                propName: "name",
+                label: "姓名",
+                appearance: "textEdit",
+                injectable: true
+            }, {
+                propName: "duty",
+                label: "职务",
+                appearance: "textEdit",
+                injectable: true
+            }, {
+                propName: "tel",
+                label: "电话",
+                appearance: "textEdit",
+                injectable: true
+            }, {
+                propName: "mob",
+                label: "手机",
+                appearance: "textEdit",
+                injectable: true
+            }, {
+                propName: "address",
+                label: "地址",
+                appearance: "textEdit",
+                injectable: true
+            }, {
+                propName: "photo",
+                label: "照片",
+                appearance: "photoEdit",
+                injectable: true
+            }]
+        }, {
+            editBarIdx: 1,
+            dataFilters: [{
+                propName: "photo",
+                appearance: "contactPhoto"
+            }, {
+                propName: "name",
+                appearance: "contactName"
+            }, {
+                propName: "duty",
+                appearance: "contactDuty"
+            }, {
+                propName: "tel",
+                label: String.fromCharCode(0xf095),
+                appearance: "contactItem"
+            }, {
+                propName: "mob",
+                label: String.fromCharCode(0xf10b),
+                appearance: "contactItem"
+            }, {
+                propName: "address",
+                label: String.fromCharCode(0xf041),
+                appearance: "contactItem"
+            }]
+        }], {});
+        detailEdit.show(true, "edit");
+        detailEdit.onSave = function(dataObj, curData) {
+            console.log(dataObj);
+            console.log(curData);
+        }
+        detailEdit.onDel = function(dataObj) {
+            console.log(dataObj);
+        }
+    </script>
+</body>
+</html>

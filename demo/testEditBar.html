@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>EditBar</title>
+    <link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.css">
+    <script src="jquery-ui-1.12.1/external/jquery/jquery-3.3.1.min.js"></script>
+    <script src="js/components/templatedForm.js"></script>
+    <script src="js/components/EditBar.js"></script>
+</head>
+<body>
+<div id="T-component" style="background:blue;"></div>
+<div id="T-component1"></div>
+<script>
+    var $div = document.getElementById('T-component');
+    var $div1 = document.getElementById('T-component1');
+
+    function onClickBtn(idx) {
+        alert('按钮编号：'+ idx);
+    };
+
+    (new EditBar()).render(
+        $div, 'dome1', 'width:10px;height:10px;border:1px solid #000;',
+        {
+            styleOrClass:'fa fa-trash',
+            onclick: onClickBtn
+        }
+    );
+
+    (new EditBar()).render(
+        $div1, '高英豪', '',
+        [{
+            styleOrClass:'fa fa-remove',
+            onclick: onClickBtn
+        },{
+            styleOrClass:'fa fa-remove',
+            onclick: onClickBtn
+        }]
+    );
+</script>
+</body>
+</html>

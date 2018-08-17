@@ -1,0 +1,49 @@
+<html>
+<head>
+    <title>Test Table View</title>
+	<meta charset="UTF-8">
+    <style>
+    .list-item { background-color: #f4f4f4; clear: both; }
+    </style>
+    <script src="js/components/templatedForm.js"></script>
+    <script src="js/components/TableView.js"></script>
+</head>
+<body>
+    <div id="Container"></div>
+    <script>
+        var container = document.getElementById("Container");
+        var tblView = new TableView([{
+            headAppearance: true,
+            columns: [{
+                propName: "id",
+            }, {
+                propName: "name",
+            }, {
+                propName: "age",
+            }]
+        }, {
+            rowStyleOrClass: "list-item",
+            columns: [{
+                propName: "id",
+            }, {
+                propName: "name",
+            }, {
+                propName: "age",
+            }]
+        }]);
+        tblView.renderHead(container, {
+            appearanceIdx: 0,
+            titles: {id: "编号", name: "姓名", age: "年龄"}
+        });
+        var dataSource = [{
+            id: "1", name: "test1", age: "30"
+        }, {
+            id: "2", name: "test2", age: "40"
+        }];
+        tblView.append(container, 1, dataSource);
+        console.log(tblView.extract(container, 1));
+        tblView.remove(container, 1, [1]);
+        tblView.update(container, 1, false, {id: "0", name: "xxx", age: "100"});
+    </script>
+</body>
+</html>

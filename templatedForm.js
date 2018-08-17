@@ -564,51 +564,31 @@ if (GLOBAL.TemplatedForm == null)(function() {
             tplArgs.onSetSelIdx.call(tplForm.domItems[idx]);
         };
 
-        // @param formItems - the reference of tplForm.domItems.
-        // @param posBef - the position where the cloned tplForm.domTpl will be
-        //                 inserted before, must explicitly pass null to insert
-        //                 at the end of the list.
-        // @return the index offset.
-        var cloneDomTpl = function(formItems, posBef) {
-            var cloneTpl = tplForm.domTpl;
-            if (cloneTpl.style.visibility == "hidden") {
-                cloneTpl.style.visibility = "visible";
-                return 0;
-            } else {
-                for (var i = 0; i < formItems.length; ++i) {
-                    if (formItems[i] != self.domSel && formItems[i]) {
-                        cloneTpl = formItems[i];
-                        break;
-                    }
-                }
-                tplForm.domTpl = cloneTpl.cloneNode(true);
-                tplForm.domTpl.removeAttribute("id");
-                cloneTpl.parentNode.insertBefore(tplForm.domTpl, posBef);
-                return formItems.length;
-            }
-        };
-
         // @param itemData - the data for append.
         this.append = function(itemData) {
             var formItems = tplForm.domItems;
-            var itemIdxOff = cloneDomTpl(formItems, null);
+            var itemIdxOff = this.itemCount;
             var onAddDomItem = tplForm.onAddDomItem;
-            tplForm.onAddDomItem = function(dataObj, i) {
-                onAddDomItem.call(this, dataObj, itemIdxOff + i);
-            };
+            tplForm.onAddDomItem = null;
             tplForm.domItems = null;
+            if (tplForm.domTpl.style.visibility == "hidden")
+                tplForm.domTpl.style.visibility = "visible";
             tplForm.formData(itemData);
-            if ( !Array.isArray(itemData) )
-                onAddDomItem.call(this, itemData, itemIdxOff);
-            tplForm.onAddDomItem = onAddDomItem;
             this.itemCount += tplForm.domItems.length;
             if (itemIdxOff > 0)
                 tplForm.domItems = formItems.concat(tplForm.domItems);
+            if ( Array.isArray(itemData) ) {
+                for (var i = 0; i < itemData.length; ++i)
+                    onAddDomItem.call(this, itemData[i], itemIdxOff + i);
+            } else {
+                onAddDomItem.call(this, itemData, itemIdxOff);
+            }
+            tplForm.onAddDomItem = onAddDomItem;
         };
 
         // @param idx - the index of list-item.
         // [@param emptyData] - the data or callback when removed all items.
-        this.remove = function(idx, emptyData, delDomItem) {
+        this.remove = function(idx, emptyData) {
             var domItem = tplForm.domItems[idx];
             if (domItem) {
                 if (domItem.parentNode.childNodes.length > 1) {
@@ -623,15 +603,11 @@ if (GLOBAL.TemplatedForm == null)(function() {
                         ) ? domItem.previousSibling : domItem.nextSibling;
                     }
                     domItem.parentNode.removeChild(domItem);
-                    if (delDomItem){
-                        console.log(tplForm.domItems[idx])
-                        tplForm.domItems.splice(idx,1);
-                        for (var i=0;i<tplForm.domItems.length;++i){
-                            tplForm.domItems[i].idx = i;
-                        };
-                    }else{
-                        tplForm.domItems[idx] = null;
+                    for (var i = idx + 1; i < tplForm.domItems.length; ++i) {
+                        tplForm.domItems[i].idx = i - 1;
+                        tplForm.domItems[i - 1] = tplForm.domItems[i];
                     }
+                    tplForm.domItems.pop();
                 } else {
                     tplForm.domTpl = this.domSel = domItem;
                     tplForm.domItems = [domItem];
@@ -645,7 +621,7 @@ if (GLOBAL.TemplatedForm == null)(function() {
                         tplForm.domTpl.style.visibility = "hidden";
                     }
                 }
-                --this.itemCount;
+                --(this.itemCount);
             }
         };
 
@@ -654,20 +630,7 @@ if (GLOBAL.TemplatedForm == null)(function() {
         this.update = function(idx, itemData) {
             if ( Array.isArray(itemData) )
                 throw new TypeError("invalid item-data!");
-            var formItems = tplForm.domItems;
-            if (formItems[idx] == null) {
-                var posBef = null;
-                for (var i = idx + 1; i < formItems.length; ++i) {
-                    if (formItems[i]) {
-                        posBef = formItems[i];
-                        break;
-                    }
-                }
-                cloneDomTpl(formItems, posBef);
-                formItems[idx] = tplForm.domTpl;
-            } else {
-                tplForm.domTpl = formItems[idx];
-            }
+            tplForm.domTpl = tplForm.domItems[idx];
             tplForm.formData(itemData);
             tplForm.domTpl.idx = idx;
         };

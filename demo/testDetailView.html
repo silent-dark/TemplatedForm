@@ -1,0 +1,71 @@
+<html>
+<head>
+    <title>Test Detail View</title>
+	<meta charset="UTF-8">
+    <style>
+    .list-item { background-color: #f4f4f4; clear: both; }
+    .list-item .label { float: left; width: 100px; display: block; }
+    </style>
+    <script src="js/components/templatedForm.js"></script>
+    <script src="js/components/DetailView.js"></script>
+</head>
+<body>
+    <div id="Container"></div>
+    <script>
+        var container = document.getElementById("Container");
+        var detailView = new DetailView([{
+            // 外观名称，用于获取该外观。
+            name: "DisplayView",
+            // 整体样式，根据参数是否为style格式（包含':'或';'字符）自动判断是style还是class。
+            styleOrClass: "list-item",
+            // 可选，标签区域样式，如果不包含标签区域，可以为空（undefined||null||""）。
+            labelStyleOrClass: "label",
+            // 内容区域外观。
+            valueAppearance: {
+                // 内容区域样式
+                styleOrClass: "margin-left: 200px;",
+                // 可选，输入数据绑定的DOM-property或DOM-attribute（加前缀'@'），默认为"textContent"。
+                bind: "textContent",
+                // 可选，内容区域的标签，默认为"span"。
+                tagName: "span",
+                // 可选，如果指定了tagName参数，则可以通过该参数设置标签属性，例如：
+                // {
+                //      'id': "xxxx",                   // 设置DOM-property
+                //      '@id': "xxxx",                  // 设置DOM-attribute
+                //      'onclick': function () {...},   // 通过DOM-property设置事件回调
+                // }
+                propOrAttr: {
+                    "@class": "aa",
+                    "onclick": function() {
+                        alert(1);
+                    }
+                },
+            }
+        }]);
+        var dataSource = [{
+            name: "test1",
+            item: {
+                age: 11,
+                i: { d: 1 }
+            },
+        }, {
+            name: "test2",
+            item: {
+                age: 12,
+                i: { d: 2 }
+            },
+        }];
+        detailView.render(container, [{
+            propName: "item.i.d",
+            label: "编号",
+            appearance: "DisplayView",
+            injectable: true
+        }, {
+            propName: "name",
+            label: "姓名",
+            appearance: "DisplayView"
+        }], dataSource);
+        console.log(detailView.extract(container));
+    </script>
+</body>
+</html>

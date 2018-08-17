@@ -13,7 +13,9 @@ if(TemplatedForm.selView == null)(function() {
                     var domList = this.nextSibling;
                     domList.style.display = "block";
                     if(domList.getAttribute("posOff") == -1) {
-                        domList.style.top = (-(domList.clientHeight + 1)).toString() + "px";
+                        domList.style.top = (
+                            -(domList.clientHeight + 1)
+                        ).toString() + "px";
                     }
                     domList.focus();
                 }
@@ -44,6 +46,9 @@ if(TemplatedForm.selView == null)(function() {
                 var domList = this.parentNode;
                 domList.style.display = "none";
                 domList.previousSibling.textContent = this.textContent;
+                self.domSel.className = TemplatedForm.getRowStyle(
+                    styles.itemStyle, this.idx
+                );
                 self.domSel = this;
                 if(self.onSel)
                     self.onSel.call(this);
@@ -60,14 +65,16 @@ if(TemplatedForm.selView == null)(function() {
     //    fieldMap: String,    // the pairs of fieldName.
     // }
     // @param container - the container id or element.
-    // @param onSel - the callback function(domSel) when select list-item.
+    // @param onSel - the callback function() when select list-item.
     TemplatedForm.selView = function(values, styles, container, onSel) {
         var getFormTpl = function() {
             this.domTpl.style.position = "relative";
             this.domTpl.style.whiteSpace = "nowrap";
             this.onAddDomItem = function(dataObj, i) {
                 this.domItems[i].idx = i;
-                this.domItems[i].className = TemplatedForm.getRowStyle(styles.itemStyle, i);
+                this.domItems[i].className = TemplatedForm.getRowStyle(
+                    styles.itemStyle, i
+                );
             };
             return this.domTpl.lastChild.lastChild;
         };

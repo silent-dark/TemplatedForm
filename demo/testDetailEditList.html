@@ -1,0 +1,88 @@
+<html>
+<head>
+    <title>Test Detail View</title>
+	<meta charset="UTF-8">
+    <style>
+    .list-item { background-color: #f4f4f4; clear: both; }
+    .label { display: inline-block; width: 100px; }
+    .title-bar { background-color: blue; }
+    </style>
+    <link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.css">
+    <script src="jquery-ui-1.12.1/external/jquery/jquery-3.3.1.min.js"></script>
+    <script src="js/components/templatedForm.js"></script>
+    <script src="js/components/DetailView.js"></script>
+    <script src="js/components/EditBar.js"></script>
+    <script src="js/components/DetailEdit.js"></script>
+    <script src="js/components/PageBar.js"></script>
+    <script src="js/components/DetailEditList.js"></script>
+</head>
+<body>
+    <div id="Container"></div>
+    <script>
+        var detailEditList = new DetailEditList({
+            dvAppearances: [{
+                name: "listItem",
+                styleOrClass: "list-item",
+                labelStyleOrClass: "label",
+            }, {
+                name: "editItem",
+                styleOrClass: "list-item",
+                labelStyleOrClass: "label",
+                valueAppearance: {
+                    tagName: "input",
+                    propOrAttr: {
+                        type: "text"
+                    },
+                    bind: "value"
+                }
+            }],
+            ebAppearances: [{
+                styleOrClass: "title-bar",
+                highlight: "fa fa-pencil",
+                title: "编辑模式",
+                btnStyleOrClasses: ["fa fa-save", "fa fa-remove"]
+            }, {
+                styleOrClass: "title-bar",
+                highlight: "fa fa-eye",
+                title: "查看模式",
+                btnStyleOrClasses: ["fa fa-edit", "fa fa-trash"]
+            }],
+            adapters: [{
+                modelName: "users",
+                binders: [{
+                    editBarIdx: 0,
+                    dataFilters: [{
+                        propName: "name",
+                        label: "姓名",
+                        appearance: "editItem",
+                        injectable: true
+                    }, {
+                        propName: "age",
+                        label: "年龄",
+                        appearance: "editItem",
+                        injectable: true
+                    }]
+                }, {
+                    editBarIdx: 1,
+                    dataFilters: [{
+                        propName: "name",
+                        label: "姓名",
+                        appearance: "listItem"
+                    }, {
+                        propName: "age",
+                        label: "年龄",
+                        appearance: "listItem"
+                    }]
+                }]
+            }]
+        });
+        var container = document.getElementById("Container");
+        detailEditList.attach(container, "users");
+        detailEditList.refresh([{
+            id: "1", name: "test1", age: "30"
+        }, {
+            id: "2", name: "test2", age: "40"
+        }]);
+    </script>
+</body>
+</html>
