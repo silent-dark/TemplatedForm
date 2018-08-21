@@ -330,11 +330,11 @@ if (GLOBAL.TemplatedForm == null)(function() {
         var s = filePath.lastIndexOf('/') + 1;
         var fileName = (s > 0) ? filePath.substr(s) : filePath;
         var domLoaded = this.DOCX.getElementsByTagName(tagName);
-        for (var i = 0; i < domLoaded.length; ++i) {
+        for (var i = domLoaded.length - 1; i > -1; --i) {
             var loadedPath = domLoaded[i][pathAttr];
             s = loadedPath.lastIndexOf('/') + 1;
             var loadedFile = (s > 0) ? loadedPath.substr(s) : loadedPath;
-            s = loadedPath.indexOf('?');
+            s = loadedFile.indexOf('?');
             if (s > -1)
                 loadedFile = loadedFile.substr(0, s);
             if (fileName === loadedFile && domLoaded[i].loaded) {
