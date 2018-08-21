@@ -21,14 +21,27 @@ if (window.SearchView == null) {
         ];
 
         var self = this;
+        this.searchArgs = {};
         this.innerSearchPanel.onSearch = function(searchData) {
-            if (searchData.modelName) {
-                self._searchFor(searchData.modelName, searchData);
-            } else if (self._condOptions.searchFieldNames) {
-                for (var k in self._condOptions.searchFieldNames)
-                    self._searchFor(k, searchData);
-            } else {
-                throw new TypeError("unknown modelName");
+            if (self.onSearch) {
+                if (self.innerPageBar && self.innerPageBar.curPageIdx) {
+                    delete self.searchArgs.pageIdx;
+                    if ( dbClient.needUpdate(self.searchArgs, searchData) )
+                        self.innerPageBar.curPageIdx = 1;
+                    searchData.pageIdx = self.innerPageBar.curPageIdx - 1;
+                } else {
+                    searchData.pageIdx = 0;
+                }
+                self.searchArgs = searchData;
+
+                if (searchData.modelName) {
+                    self._searchFor(searchData.modelName, searchData);
+                } else if (self._condOptions.searchFieldNames) {
+                    for (var k in self._condOptions.searchFieldNames)
+                        self._searchFor(k, searchData);
+                } else {
+                    throw new TypeError("unknown modelName");
+                }
             }
         };
     };
@@ -62,6 +75,17 @@ if (window.SearchView == null) {
                         self.innerSearchPanel.doSearch();
                     }
                 );
+
+                if (searchCond) {
+                    var pageNum = 0;
+                    if (searchCond.dvData && searchCond.dvData.pageIdx > 0)
+                        pageNum = searchCond.dvData.pageIdx + 1;
+                    else if (searchCond.pageIdx > 0)
+                        pageNum = searchCond.pageIdx + 1;
+
+                    if (pageNum > 0)
+                        this.innerPageBar.curPageIdx = pageNum;
+                }
             }
         },
 
@@ -99,21 +123,15 @@ if (window.SearchView == null) {
         },
 
         _searchFor: function(modelName, searchData) {
-            if (this.onSearch) {
-                var pageIdx = 0;
-                if (this.innerPageBar && this.innerPageBar.curPageIdx)
-                    pageIdx = this.innerPageBar.curPageIdx - 1;
-
-                this.onSearch(
-                    modelName,
-                    Object.assign({
-                        pageSize: this.pageSize? this.pageSize: 0,
-                        page: pageIdx
-                    }, {
-                        cond: this._condFor(modelName, searchData)
-                    })
-                );
-            }
+            this.onSearch(
+                modelName,
+                Object.assign({
+                    pageSize: this.pageSize? this.pageSize: 0,
+                    page: searchData.pageIdx
+                }, {
+                    cond: this._condFor(modelName, searchData)
+                })
+            );
         },
 
         _condFor: function (modelName, searchData) {

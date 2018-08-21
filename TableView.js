@@ -167,10 +167,13 @@ if (window.TableView == null) {
                 cellData = TemplatedForm.refProp(rowData, col.propName);
             }
 
-            if (cellData == null)
-                console.log(
-                    new ReferenceError(col.propName + " is undefined!")
-                );
+            if (cellData == null) {
+                if (!col.hidable) {
+                    console.log(
+                        new ReferenceError(col.propName + " is undefined!")
+                    );
+                }
+            }
             else if (cellData.call)
                 cellData(domCell);
             else if (col.useHTML)

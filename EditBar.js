@@ -10,28 +10,27 @@ EditBar.prototype.render = function ($obj, title, highlight, buttons) {
     //默认数据
     this.sStyleDef = "width: 100%; line-height: 30px; height: 40px; padding: 5px 10px; box-sizing: border-box;" +
         "background: #41007A; overflow: hidden; color: #fff; font-size: 20px; font-weight: bolder; margin-bottom: 10px;";
-    this._title = title;
-    this._highlight = highlight;
-    this._buttons = TemplatedForm.obj2array(buttons) || [{
-        styleOrClass:'fa fa-trash-o',
-        onclick:function(idx){
-            alert('按钮编号：'+ idx);
-        }
-    }];
-    //初始容器
+
     this.$container = $($obj);
     $obj.innerHTML = "";
-    if (highlight && typeof highlight == "string")
+    if (highlight && typeof highlight == "string") {
+        this._highlight = highlight;
         this.setHighlight();
-    if (title && typeof title == "string")
+    }
+    if (title && typeof title == "string") {
+        this._title = title;
         this.setTitle();
-    this.setButtons();
+    }
+    if (buttons) {
+        this._buttons = TemplatedForm.obj2array(buttons);
+        this.setButtons();
+    }
 };
 EditBar.prototype.setHighlight = function () {
     var $b = document.createElement('span');
-    if(!!this._highlight.match(/:.+;?/g)){
+    if(this._highlight.match(/:.+;?/g)){
         $b.setAttribute('style',this._highlight);
-    }else if(!!this._highlight.match(/\./g)){
+    }else if(this._highlight.match(/\./g)){
         var $img = document.createElement('img');
         $img.setAttribute('style','width:'+ this.$span.setOffset('width') +'px; height:'+ this.$span.setOffset('width') +'px');
         $img.src = this._highlight;
@@ -42,7 +41,6 @@ EditBar.prototype.setHighlight = function () {
     this.$container.append($b);
 };
 EditBar.prototype.setTitle = function () {
-    //添加标题
     this.$span = document.createElement('span');
     if (this.$span.textContent==null)
         this.$span.innerText = this._title+'';
@@ -52,29 +50,27 @@ EditBar.prototype.setTitle = function () {
     this.$container.append(this.$span);
 };
 EditBar.prototype.setButtons = function () {
-    var that = this,
-        $span = document.createElement('span');
-    $span.style = 'float:right; color:#D6D400;';
+    var $span = document.createElement('span');
+    $span.style = 'float:right;';
 
-    try {
-        that._buttons.map(function(item,idx){
-            var $a = document.createElement('a');
-            //样式
-            if(!!item.styleOrClass.match(/:.+;/g)){
-                $a.setAttribute('style',item.styleOrClass);
-            }else{
-                $a.className = item.styleOrClass;
-            }
-            //绑定事件
-            $a.addEventListener('click',function(event){
-                item.onclick(idx);
-            });
-            //插入span
-            $span.append($a);
-        })
-    }catch(e){
-        alert('参数buttons格式不正确，格式为数组')
-    }
-    //插入document
-    that.$container.append($span);
+    this._buttons.map(function(btn,i){
+        btn.domBtn = document.createElement("a");
+        btn.domBtn.href = "#";
+        if (btn.styleOrClass)
+            TemplatedForm.setStyleOrClass(btn.domBtn, btn.styleOrClass);
+        if (btn.text) {
+            if (btn.domBtn.textContent)
+                btn.domBtn.textContent = btn.text;
+            else
+                btn.domBtn.innerText = btn.text;
+        }
+        if (btn.onclick) {
+            btn.domBtn.onclick = function() {
+                btn.onclick.call(this, i, arguments);
+            };
+        }
+        $span.append(btn.domBtn);
+    })
+
+    this.$container.append($span);
 };

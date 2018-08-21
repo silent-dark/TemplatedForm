@@ -126,7 +126,8 @@ if (window.DetailEdit == null) {
                         saveResult = that.onSave(dataObj, that.dataObj);
                     if ( saveResult && !TemplatedForm.isEmpty(saveResult) ) {
                         console.log(saveResult);
-                        alert(saveResult.alertText);
+                        if (saveResult.alertText)
+                            alert(saveResult.alertText);
                     } else {
                         that.dataObj = dataObj;
 
@@ -174,7 +175,8 @@ if (window.DetailEdit == null) {
                                 !TemplatedForm.isEmpty(delResult) )
                             {
                                 console.log(delResult);
-                                alert(delResult.alertText);
+                                if (delResult.alertText)
+                                    alert(delResult.alertText);
                             } else {
                                 that.show(false);
                             }

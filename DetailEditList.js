@@ -22,8 +22,8 @@ if (window.DetailEditList == null) {
         attach: function(
             container, searchModel, showPages, pageSize, condOptions)
         {
-            container = TemplatedForm.getDomElement(container);
-            container.innerHTML = "";
+            this._container = TemplatedForm.getDomElement(container);
+            this._container.innerHTML = "";
 
             this.searchModel = searchModel;
             this.pageSize = pageSize;
@@ -37,7 +37,7 @@ if (window.DetailEditList == null) {
                     );
                 }
                 domComp.style.display = "none";
-                container.appendChild(domComp);
+                this._container.appendChild(domComp);
                 this.domComponents.push(domComp);
             }
 
@@ -74,9 +74,16 @@ if (window.DetailEditList == null) {
 
             if (totalPages > 1 && this.innerPageBar) {
                 this.domComponents[2].style.display = "block";
+                if (!this._container.style.height) {
+                    this._container.style.height = (
+                        this._container.clientHeight + 10 +
+                        this.domComponents[2].clientHeight
+                    ).toString() + "px";
+                }
                 this.innerPageBar.setTotalPages(totalPages);
             } else {
                 this.domComponents[2].style.display = "none";
+                this._container.style.height = "";
             }
         },
 
@@ -197,6 +204,9 @@ if (window.DetailEditList == null) {
                 }
             };
             this.detailEdit.onDel = function(obj) {
+                if (that.innerPageBar && that.innerPageBar.curPageIdx > 0)
+                    --(that.innerPageBar.curPageIdx);
+
                 if (that.onDel)
                     that.onDel(deAdapter.modelName, obj);
             };
