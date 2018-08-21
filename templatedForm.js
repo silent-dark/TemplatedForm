@@ -64,7 +64,7 @@ if (GLOBAL.TemplatedForm == null)(function() {
     TemplatedForm.parentPath = function(path) {
         var i = path.length - 1;
         while ( path.charAt(i) == '/' ) --i;
-        return path.substring( 0, path.lastIndexOf('/', i) );
+        return path.substr( 0, path.lastIndexOf('/', i) );
     };
 
     // @param target - the JS object for getting/setting the value.
@@ -328,12 +328,15 @@ if (GLOBAL.TemplatedForm == null)(function() {
         var tplAttr = tpl[tagName].$;
         var filePath = tplAttr[pathAttr];
         var s = filePath.lastIndexOf('/') + 1;
-        var fileName = (s > 0) ? filePath.substring(s) : filePath;
+        var fileName = (s > 0) ? filePath.substr(s) : filePath;
         var domLoaded = this.DOCX.getElementsByTagName(tagName);
         for (var i = 0; i < domLoaded.length; ++i) {
             var loadedPath = domLoaded[i][pathAttr];
             s = loadedPath.lastIndexOf('/') + 1;
-            var loadedFile = (s > 0) ? loadedPath.substring(s) : loadedPath;
+            var loadedFile = (s > 0) ? loadedPath.substr(s) : loadedPath;
+            s = loadedPath.indexOf('?');
+            if (s > -1)
+                loadedFile = loadedFile.substr(0, s);
             if (fileName === loadedFile && domLoaded[i].loaded) {
                 // loaded:
                 tagName = null;
@@ -343,6 +346,7 @@ if (GLOBAL.TemplatedForm == null)(function() {
         if (tagName) {
             if (container == null)
                 container = this.DOCX.head;
+            tplAttr[pathAttr] += "?_=" + this.randomString(12);
             tplAttr.onload = function() {
                 this.loaded = true;
                 if (onLoad)
