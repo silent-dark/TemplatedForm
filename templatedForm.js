@@ -589,9 +589,9 @@ if (GLOBAL.TemplatedForm == null)(function() {
             this.itemCount = tplForm.domItems.length;
             if ( Array.isArray(itemData) ) {
                 for (var i = 0; i < itemData.length; ++i)
-                    onAddDomItem.call(this, itemData[i], itemIdxOff + i);
+                    onAddDomItem.call(tplForm, itemData[i], itemIdxOff + i);
             } else {
-                onAddDomItem.call(this, itemData, itemIdxOff);
+                onAddDomItem.call(tplForm, itemData, itemIdxOff);
             }
             tplForm.onAddDomItem = onAddDomItem;
         };
