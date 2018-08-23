@@ -8,28 +8,27 @@
  *@param  onGoPage     fun(pageIdx)  切换页面时的回掉函数,  pageIdx:切换的目标页号
  */
 var PageBar = function (appearances) {
-    var that = this;
-    that._appearances = appearances;
+    this._appearances = appearances;
 
     //初始容器
-    that.$conLeft = $('<div class="pb-conLeft"></div>');
-    that.$conMiddle = $('<div class="pb-conMiddle"></div>');
-    that.$conRight = $('<div class="pb-conRight"></div>');
-    that.$conRightDiv = $('<div class="pb-conRightDiv"></div>');
-    that.$toStart = $('<span class="pb-btn pb-toStart pb-hidden pb-disabled" data-target="toStart">|&lt;</spanspan>');
-    that.$toMaxLeft = $('<span class="pb-btn pb-toMaxLeft pb-hidden pb-disabled" data-target="toMaxLeft">&lt;&lt;</span>');
-    that.$toLeft = $('<span class="pb-btn pb-toLeft pb-hidden pb-disabled" data-target="toLeft">&lt;</span>');
-    that.$startPage = $('<span class="pb-btn pb-startPage pb-hidden" data-target="toStart">1</span>');
-    that.$omitLeft = $('<span class="pb-omitLeft pb-hidden">&nbsp;...&nbsp;</span>');
-    that.$toEnd = $('<span class="pb-btn pb-toEnd pb-hidden" data-target="toEnd">&gt;|</span>');
-    that.$toMaxRight = $('<span class="pb-btn pb-toMaxRight pb-hidden" data-target="toMaxRight">&gt;&gt;</span>');
-    that.$toRight = $('<span class="pb-btn pb-toRight pb-hidden" data-target="toRight">&gt;</span>');
-    that.$endPage = $('<span class="pb-btn pb-endPage pb-hidden" data-target="toEnd"></span>');
-    that.$omitRight = $('<span class="pb-omitRight pb-hidden pb-right">&nbsp;...&nbsp;</span>');
+    this.$conLeft = $('<div class="pb-conLeft"></div>');
+    this.$conMiddle = $('<div class="pb-conMiddle"></div>');
+    this.$conRight = $('<div class="pb-conRight"></div>');
+    this.$conRightDiv = $('<div class="pb-conRightDiv"></div>');
+    this.$toStart = $('<span class="pb-btn pb-toStart pb-hidden pb-disabled" data-target="toStart">|&lt;</spanspan>');
+    this.$toMaxLeft = $('<span class="pb-btn pb-toMaxLeft pb-hidden pb-disabled" data-target="toMaxLeft">&lt;&lt;</span>');
+    this.$toLeft = $('<span class="pb-btn pb-toLeft pb-hidden pb-disabled" data-target="toLeft">&lt;</span>');
+    this.$startPage = $('<span class="pb-btn pb-startPage pb-hidden" data-target="toStart">1</span>');
+    this.$omitLeft = $('<span class="pb-omitLeft pb-hidden">&nbsp;...&nbsp;</span>');
+    this.$toEnd = $('<span class="pb-btn pb-toEnd pb-hidden" data-target="toEnd">&gt;|</span>');
+    this.$toMaxRight = $('<span class="pb-btn pb-toMaxRight pb-hidden" data-target="toMaxRight">&gt;&gt;</span>');
+    this.$toRight = $('<span class="pb-btn pb-toRight pb-hidden" data-target="toRight">&gt;</span>');
+    this.$endPage = $('<span class="pb-btn pb-endPage pb-hidden" data-target="toEnd"></span>');
+    this.$omitRight = $('<span class="pb-omitRight pb-hidden pb-right">&nbsp;...&nbsp;</span>');
     //常量
-    that.pageLiWidth = 0;
+    this.pageLiWidth = 0;
     //工具
-    that.tools = { 
+    this.tools = { 
         setStyleOrClass: setStyleOrClass,
         setBtnTextStyle: setBtnTextStyle,
         getEndIdx      : getEndIdx,
@@ -38,65 +37,60 @@ var PageBar = function (appearances) {
 };
 
 PageBar.prototype.render = function ($top,totalPages,showPages,onGoPage) {
-    var that = this;
-
     $top.innerHTML = "";
-    that.$container = $($top);
-    that.totalPages = totalPages;
-    that.showPages = showPages;
-    that.onGoPage = onGoPage || function(){};
-    that.curPageIdx = 1;
-    that.startIdx = 1;
-    that.endIdx = that.tools.getEndIdx(that,that.startIdx);
+    this.$container = $($top);
+    this.totalPages = totalPages;
+    this.showPages = showPages;
+    this.onGoPage = onGoPage || function(){};
+    this.curPageIdx = 1;
+    this.startIdx = 1;
+    this.endIdx = this.tools.getEndIdx(this,this.startIdx);
     //插入dom
-    that.addLeftBtn();
-    that.addPageBtn(that.curPageIdx,that.endIdx);
-    that.$container.append(that.$conMiddle);
-    that.addRightBtn(totalPages);
+    this.addLeftBtn();
+    this.addPageBtn(this.curPageIdx,this.endIdx);
+    this.$container.append(this.$conMiddle);
+    this.addRightBtn(totalPages);
     //配置
-    that.setConMiddle();
+    this.setConMiddle();
     //事件绑定
-    that.init_event();
+    this.init_event();
 };
 
 /**************************************配置*************************************/
 PageBar.prototype.setConMiddle = function () {
-    var that = this,
-        appearances = this._appearances;
+    var appearances = this._appearances;
 
     //样式
-    that.tools.setStyleOrClass(that.$conMiddle.find('a'),appearances.pageStyleOrClass);
-    that.tools.setStyleOrClass(that.$conMiddle.find('a.pb-active'),appearances.curPageStyleOrClass);
-    that.tools.setStyleOrClass(that.$conMiddle.find('span.pb-disabled'),appearances.disabledStyleOrClass);
+    this.tools.setStyleOrClass(this.$conMiddle.find('a'),appearances.pageStyleOrClass);
+    this.tools.setStyleOrClass(this.$conMiddle.find('a.pb-active'),appearances.curPageStyleOrClass);
+    this.tools.setStyleOrClass(this.$conMiddle.find('span.pb-disabled'),appearances.disabledStyleOrClass);
 
-    that.tools.setBtnTextStyle('firstPage',that.$toStart,appearances);
-    that.tools.setBtnTextStyle('lastPage',that.$toEnd,appearances);
-    that.tools.setBtnTextStyle('preGroup',that.$toMaxLeft,appearances);
-    that.tools.setBtnTextStyle('nextGroup',that.$toMaxRight,appearances);
-    that.tools.setBtnTextStyle('prePage',that.$toLeft,appearances);
-    that.tools.setBtnTextStyle('nextPage',that.$toRight,appearances);
+    this.tools.setBtnTextStyle('firstPage',this.$toStart,appearances);
+    this.tools.setBtnTextStyle('lastPage',this.$toEnd,appearances);
+    this.tools.setBtnTextStyle('preGroup',this.$toMaxLeft,appearances);
+    this.tools.setBtnTextStyle('nextGroup',this.$toMaxRight,appearances);
+    this.tools.setBtnTextStyle('prePage',this.$toLeft,appearances);
+    this.tools.setBtnTextStyle('nextPage',this.$toRight,appearances);
 
-    that.adjustButtons();
+    this.adjustButtons();
 };
 
 PageBar.prototype.adjustButtons = function() {
-    var that = this;
-
     //page按钮自适应
-    var nConWidth = that.$container.outerWidth(),
-        nLeftWidth = that.$conLeft.outerWidth(),
-        nMiddenWidth = that.$conMiddle.outerWidth(),
-        nRightWidth = that.$conRight.outerWidth(),
-        nLeftHeight = that.$conLeft.outerHeight();
+    var nConWidth = this.$container.outerWidth(),
+        nLeftWidth = this.$conLeft.outerWidth(),
+        nMiddenWidth = this.$conMiddle.outerWidth(),
+        nRightWidth = this.$conRight.outerWidth(),
+        nLeftHeight = this.$conLeft.outerHeight();
 
-    that.$conMiddle.css({
+    this.$conMiddle.css({
         left:nLeftWidth
     });
-    that.$conRight.css({
+    this.$conRight.css({
         left:nLeftWidth+nMiddenWidth,
         height:nLeftHeight
     });
-    that.$conMiddle.css({
+    this.$conMiddle.css({
         height:nLeftHeight
     });
 };
@@ -105,7 +99,7 @@ PageBar.prototype.adjustButtons = function() {
 PageBar.prototype.init_event = function () {
     var that = this;
 
-    that.$container.on('click','.pb-btn:not(.pb-disabled)',function(){
+    this.$container.on('click','.pb-btn:not(.pb-disabled)',function(){
         var $this = $(this),
             target = $this.data('target');
 
@@ -138,87 +132,77 @@ PageBar.prototype.init_event = function () {
         that.onGoPage(that.curPageIdx);
     })
 
-    that.toggleBtn();
+    this.toggleBtn();
 };
 
 /****************************************方法**************************************/
 PageBar.prototype.fnToStart = function ($this) {
-    var that = this,
-        endIdx = that.tools.getEndIdx(that,1);
-    that.addPageBtn(1,endIdx);
-    that.$conMiddle.find('a.pb-active').removeClass('pb-active');
-    that.$conMiddle.find('a.pb-btn[data-page=1]').addClass('pb-active');
-    that.curPageIdx = 1;
-    that.startIdx = 1;
-    that.endIdx = endIdx;
+    var endIdx = this.tools.getEndIdx(this,1);
+    this.addPageBtn(1,endIdx);
+    this.$conMiddle.find('a.pb-active').removeClass('pb-active');
+    this.$conMiddle.find('a.pb-btn[data-page=1]').addClass('pb-active');
+    this.curPageIdx = 1;
+    this.startIdx = 1;
+    this.endIdx = endIdx;
 };
 PageBar.prototype.fnToMaxLeft = function ($this) {
-    var that = this;
-
     switch(true){
-        case that.startIdx > 1:
-            var startIdx = that.tools.getStartIdx(that,that.startIdx);
-            that.addPageBtn(startIdx,that.startIdx - 1,true);
-            that.curPageIdx = that.startIdx - 1;
-            that.endIdx = that.startIdx - 1;
-            that.startIdx = startIdx;
+        case this.startIdx > 1:
+            var startIdx = this.tools.getStartIdx(this,this.startIdx);
+            this.addPageBtn(startIdx,this.startIdx - 1,true);
+            this.curPageIdx = this.startIdx - 1;
+            this.endIdx = this.startIdx - 1;
+            this.startIdx = startIdx;
             break;
         default:
             break;
     }
 };
 PageBar.prototype.fnToLeft = function ($this) {
-    var that = this;
-
     switch(true){
-        case that.curPageIdx > that.startIdx:
-            that.$conMiddle.find('a.pb-active').removeClass('pb-active');
-            that.$conMiddle.find('a.pb-btn[data-page='+(that.curPageIdx-1)+']').addClass('pb-active');
-            that.curPageIdx = that.curPageIdx - 1;
+        case this.curPageIdx > this.startIdx:
+            this.$conMiddle.find('a.pb-active').removeClass('pb-active');
+            this.$conMiddle.find('a.pb-btn[data-page='+(this.curPageIdx-1)+']').addClass('pb-active');
+            this.curPageIdx = this.curPageIdx - 1;
             break;
-        case that.curPageIdx == that.startIdx:
-            that.fnToMaxLeft($this);
+        case this.curPageIdx == this.startIdx:
+            this.fnToMaxLeft($this);
             break;
         default:
             break;
     }
 };
 PageBar.prototype.fnToEnd = function ($this) {
-    var that = this,
-        startIdx = that.tools.getStartIdx(that,that.totalPages,true);
-    that.addPageBtn(startIdx,that.totalPages,true);
-    that.$conMiddle.find('a.pb-active').removeClass('pb-active');
-    that.$conMiddle.find('a.pb-btn[data-page='+that.totalPages+']').addClass('pb-active');
-    that.curPageIdx = that.totalPages;
-    that.startIdx = startIdx;
-    that.endIdx = that.totalPages;
+    var startIdx = this.tools.getStartIdx(this,this.totalPages,true);
+    this.addPageBtn(startIdx,this.totalPages,true);
+    this.$conMiddle.find('a.pb-active').removeClass('pb-active');
+    this.$conMiddle.find('a.pb-btn[data-page='+this.totalPages+']').addClass('pb-active');
+    this.curPageIdx = this.totalPages;
+    this.startIdx = startIdx;
+    this.endIdx = this.totalPages;
 };
 PageBar.prototype.fnToMaxRight = function ($this) {
-    var that = this;
-
     switch(true){
-        case that.endIdx < that.totalPages:
-            var endIdx = that.tools.getEndIdx(that,that.endIdx+1);
-            that.addPageBtn(that.endIdx+1,endIdx);
-            that.curPageIdx = that.endIdx + 1;
-            that.startIdx = that.endIdx + 1;
-            that.endIdx = endIdx;
+        case this.endIdx < this.totalPages:
+            var endIdx = this.tools.getEndIdx(this,this.endIdx+1);
+            this.addPageBtn(this.endIdx+1,endIdx);
+            this.curPageIdx = this.endIdx + 1;
+            this.startIdx = this.endIdx + 1;
+            this.endIdx = endIdx;
             break;
         default:
             break;
     }
 };
 PageBar.prototype.fnToRight = function ($this) {
-    var that = this;
-
     switch(true){
-        case that.curPageIdx < that.endIdx:
-            that.$conMiddle.find('a.pb-active').removeClass('pb-active');
-            that.$conMiddle.find('a.pb-btn[data-page='+(that.curPageIdx+1)+']').addClass('pb-active');
-            that.curPageIdx = that.curPageIdx + 1;
+        case this.curPageIdx < this.endIdx:
+            this.$conMiddle.find('a.pb-active').removeClass('pb-active');
+            this.$conMiddle.find('a.pb-btn[data-page='+(this.curPageIdx+1)+']').addClass('pb-active');
+            this.curPageIdx = this.curPageIdx + 1;
             break;
-        case that.curPageIdx == that.endIdx:
-            that.fnToMaxRight($this);
+        case this.curPageIdx == this.endIdx:
+            this.fnToMaxRight($this);
             break;
         default:
             break;
@@ -232,72 +216,59 @@ PageBar.prototype.fnToCurrent = function ($this,that) {
     that.curPageIdx = nPage;
 };
 PageBar.prototype.toggleBtn = function () {
-    var that = this,
-        appearances = this._appearances;
+    var appearances = this._appearances;
 
-    if(!!appearances.prePage && that.curPageIdx > 1){
-        that.$toLeft.removeClass('pb-disabled');
+    if(appearances.prePage && this.curPageIdx > 1)
+        this.$toLeft.removeClass('pb-disabled');
+    if(appearances.prePage && this.curPageIdx <= 1)
+        this.$toLeft.addClass('pb-disabled');
+    if(appearances.preGroup && this.startIdx > 1)
+        this.$toMaxLeft.removeClass('pb-disabled');
+    if(appearances.preGroup && this.startIdx <= 1)
+        this.$toMaxLeft.addClass('pb-disabled');
+    if(appearances.firstPage && this.curPageIdx > 1)
+        this.$toStart.removeClass('pb-disabled');
+    if(appearances.firstPage && this.curPageIdx <= 1)
+        this.$toStart.addClass('pb-disabled');
+    if(appearances.nextPage && this.curPageIdx >= this.totalPages)
+        this.$toRight.addClass('pb-disabled');
+    if(appearances.nextPage && this.curPageIdx < this.totalPages)
+        this.$toRight.removeClass('pb-disabled');
+    if(appearances.nextGroup && this.endIdx >= this.totalPages)
+        this.$toMaxRight.addClass('pb-disabled');
+    if(appearances.nextGroup && this.endIdx < this.totalPages)
+        this.$toMaxRight.removeClass('pb-disabled');
+    if(appearances.lastPage && this.curPageIdx >= this.totalPages)
+        this.$toEnd.addClass('pb-disabled');
+    if(appearances.lastPage && this.curPageIdx < this.totalPages)
+        this.$toEnd.removeClass('pb-disabled');
+
+    if(this.startIdx > 1){
+        this.$omitLeft.removeClass('pb-hidden');
+        this.$startPage.removeClass('pb-hidden');
+    } else {
+        this.$omitLeft.addClass('pb-hidden');
+        this.$startPage.addClass('pb-hidden');
     }
-    if(!!appearances.prePage && that.curPageIdx <= 1){
-        that.$toLeft.addClass('pb-disabled');
-    }
-    if(!!appearances.preGroup && that.startIdx > 1){
-        that.$toMaxLeft.removeClass('pb-disabled');
-    }
-    if(!!appearances.preGroup && that.startIdx <= 1){
-        that.$toMaxLeft.addClass('pb-disabled');
-    }
-    if(!!appearances.firstPage && that.curPageIdx > 1){
-        that.$toStart.removeClass('pb-disabled');
-    }
-    if(!!appearances.firstPage && that.curPageIdx <= 1){
-        that.$toStart.addClass('pb-disabled');
-    }
-    if(!!appearances.nextPage && that.curPageIdx >= that.totalPages){
-        that.$toRight.addClass('pb-disabled');
-    }
-    if(!!appearances.nextPage && that.curPageIdx < that.totalPages){
-        that.$toRight.removeClass('pb-disabled');
-    }
-    if(!!appearances.nextGroup && that.endIdx >= that.totalPages){
-        that.$toMaxRight.addClass('pb-disabled');
-    }
-    if(!!appearances.nextGroup && that.endIdx < that.totalPages){
-        that.$toMaxRight.removeClass('pb-disabled');
-    }
-    if(!!appearances.lastPage && that.curPageIdx >= that.totalPages){
-        that.$toEnd.addClass('pb-disabled');
-    }
-    if(!!appearances.lastPage && that.curPageIdx < that.totalPages){
-        that.$toEnd.removeClass('pb-disabled');
-    }
-    if(that.startIdx > 1){
-        that.$omitLeft.removeClass('pb-hidden');
-        that.$startPage.removeClass('pb-hidden');
-    }
-    if(that.startIdx <= 1){
-        that.$omitLeft.addClass('pb-hidden');
-        that.$startPage.addClass('pb-hidden');
-    }
-    if(that.endIdx < that.totalPages){
-        that.$omitRight.removeClass('pb-hidden');
-        that.$endPage.removeClass('pb-hidden');
-    }
-    if(that.endIdx >= that.totalPages){
-        that.$omitRight.addClass('pb-hidden');
-        that.$endPage.addClass('pb-hidden');
+    if(this.endIdx < this.totalPages){
+        this.$omitRight.removeClass('pb-hidden');
+        this.$endPage.removeClass('pb-hidden');
+    } else {
+        this.$omitRight.addClass('pb-hidden');
+        this.$endPage.addClass('pb-hidden');
     }
 };
 //文档要求的方法
 PageBar.prototype.setTotalPages = function (totalPages) {
-    var that = this;
-
-    that.totalPages = totalPages;
-    that.addRightBtn(that.totalPages);
-    that.endIdx = that.tools.getEndIdx(that,that.curPageIdx);
-    that.addPageBtn(that.startIdx,that.endIdx,false,true);
-    that.toggleBtn();
-    that.adjustButtons();
+    if (this.totalPages != totalPages) {
+        this.totalPages = totalPages;
+        this.addRightBtn(this.totalPages);
+        this.endIdx = this.tools.getEndIdx(this,this.curPageIdx);
+        this.startIdx = this.tools.getStartIdx(this,this.endIdx+1);
+        this.addPageBtn(this.startIdx,this.endIdx,false,true);
+        this.toggleBtn();
+        this.adjustButtons();
+    }
 }
 PageBar.prototype.getCurPage = function () {
     return this.curPageIdx;
@@ -305,44 +276,36 @@ PageBar.prototype.getCurPage = function () {
 
 /************************************插入dom**********************************/
 PageBar.prototype.addLeftBtn = function () {
-    var that = this;
-    that.$conLeft.append(that.$toStart);
-    that.$conLeft.append(that.$toMaxLeft);
-    that.$conLeft.append(that.$toLeft);
-    that.$conLeft.append(that.$startPage);
-    that.$conLeft.append(that.$omitLeft);
-
-    that.$container.append(that.$conLeft);
+    this.$conLeft.append(this.$toStart);
+    this.$conLeft.append(this.$toMaxLeft);
+    this.$conLeft.append(this.$toLeft);
+    this.$conLeft.append(this.$startPage);
+    this.$conLeft.append(this.$omitLeft);
+    this.$container.append(this.$conLeft);
 };
 PageBar.prototype.addPageBtn = function (startPage,endPage,isLeft,isSetTotaPage) {
-    var that = this;
-
-    that.$conMiddle.html(null);
+    this.$conMiddle.html(null);
     for(var i=startPage; i <= endPage; i++){
         var $li = $('<span class="pb-pageLi"></span>');
-        if(!!isLeft){
+        if(isLeft)
             $li.html('<a class="pb-btn pb-pageSpan '+ (i==endPage && 'pb-active') +'" data-page="'+i+'">'+i+'</a>');
-        }else if(!!isSetTotaPage){
-            $li.html('<a class="pb-btn pb-pageSpan '+ (i==that.curPageIdx && 'pb-active') +'" data-page="'+i+'">'+i+'</a>');
-        }else{
+        else if(isSetTotaPage)
+            $li.html('<a class="pb-btn pb-pageSpan '+ (i==this.curPageIdx && 'pb-active') +'" data-page="'+i+'">'+i+'</a>');
+        else
             $li.html('<a class="pb-btn pb-pageSpan '+ (i==startPage && 'pb-active') +'" data-page="'+i+'">'+i+'</a>');
-        }
 
-        that.$conMiddle.append($li);
+        this.$conMiddle.append($li);
     }
 };
 PageBar.prototype.addRightBtn = function (totalPages) {
-    var that = this;
-
-    that.$conRight.html(null);
-    that.$conRight.append(that.$omitRight);
-    that.$conRight.append(that.$endPage.html(totalPages));
-    that.$conRightDiv.append(that.$toRight);
-    that.$conRightDiv.append(that.$toMaxRight);
-    that.$conRightDiv.append(that.$toEnd);
-    that.$conRight.append(that.$conRightDiv);
-
-    that.$container.append(that.$conRight);
+    this.$conRight.html(null);
+    this.$conRight.append(this.$omitRight);
+    this.$conRight.append(this.$endPage.html(totalPages));
+    this.$conRightDiv.append(this.$toRight);
+    this.$conRightDiv.append(this.$toMaxRight);
+    this.$conRightDiv.append(this.$toEnd);
+    this.$conRight.append(this.$conRightDiv);
+    this.$container.append(this.$conRight);
 };
 
 /************************************工具**********************************/
@@ -353,11 +316,10 @@ PageBar.prototype.addRightBtn = function (totalPages) {
  */
 function setStyleOrClass ($this,str){
     var str = str || '';
-    if(!!str.match(/:.+;/g)){
+    if(str.match(/:.+;/g))
         $this.attr('style',str);
-    }else{
+    else
         $this.addClass(str);
-    }
 }
 /*
 * 按钮样式
@@ -366,10 +328,10 @@ function setStyleOrClass ($this,str){
 * @param  appearances     object   数据
 * */
 function setBtnTextStyle (key,$con,appearances){
-    if(!!appearances[key]){
+    if(appearances[key]){
         $con.removeClass('pb-hidden');
-        !!appearances[key].text && $con.html(appearances[key].text);
-        !!appearances[key].styleOrClass && tools.setStyleOrClass($con,appearances[key].styleOrClass);
+        appearances[key].text && $con.html(appearances[key].text);
+        appearances[key].styleOrClass && tools.setStyleOrClass($con,appearances[key].styleOrClass);
     }
 }
 /**
@@ -379,12 +341,7 @@ function setBtnTextStyle (key,$con,appearances){
  */
 function getEndIdx (that,curIdx) {
     var endIdx = curIdx + that.showPages - 1;
-
-    if(endIdx > that.totalPages){
-        return that.totalPages;
-    }else{
-        return endIdx;
-    }
+    return (endIdx > that.totalPages) ? that.totalPages : endIdx;
 }
 /**
  * 获取展示页码的第一个数字
@@ -392,12 +349,6 @@ function getEndIdx (that,curIdx) {
  * @param  number  curIdx  展示页码的起始页码数
  */
 function getStartIdx (that,curIdx,isToEnd) {
-    var    nShow = that.totalPages%that.showPages-1;
-        startIdx = !!isToEnd ? (curIdx - nShow) : (curIdx - that.showPages);
-
-    if(startIdx > 1){
-        return startIdx;
-    }else{
-        return 1;
-    }
+    var nShow = isToEnd ? (that.totalPages%that.showPages-1) : that.showPages;
+    return (curIdx > nShow) ? (curIdx - nShow) : 1;
 }
