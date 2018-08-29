@@ -47,7 +47,7 @@ if(TemplatedForm.selView == null)(function() {
                 domList.style.display = "none";
                 domList.previousSibling.textContent = this.textContent;
                 self.domSel.className = TemplatedForm.getRowStyle(
-                    styles.itemStyle, this.idx
+                    styles.itemStyle, self.domSel.idx
                 );
                 self.domSel = this;
                 if(self.onSel)

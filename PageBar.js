@@ -28,7 +28,7 @@ var PageBar = function (appearances) {
     //常量
     this.pageLiWidth = 0;
     //工具
-    this.tools = { 
+    this.tools = {
         setStyleOrClass: setStyleOrClass,
         setBtnTextStyle: setBtnTextStyle,
         getEndIdx      : getEndIdx,
