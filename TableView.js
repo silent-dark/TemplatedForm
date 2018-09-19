@@ -223,8 +223,11 @@ if (window.TableView == null) {
 
                 var appearance = this._appearances[appearanceIdx];
                 var domSec = domTbl.tBodies[0];
-                for (var y = 0; y < domSec.rows.length; ++y) {
-                    if ( befGetRowData(y) ) {
+                if (domSec) {
+                    for (var y = 0; y < domSec.rows.length; ++y) {
+                        if ( !befGetRowData(y) )
+                            continue;
+
                         var domRow = domSec.rows[y];
                         var rowData = {};
                         for (var x = 0; x < domRow.cells.length; ++x) {
@@ -244,6 +247,7 @@ if (window.TableView == null) {
                                 );
                             }
                         }
+
                         if ( aftGetRowData(rowData, y) )
                             cbTodo(rowData, domRow, domSec);
                     }
