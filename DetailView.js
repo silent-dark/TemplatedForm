@@ -14,6 +14,19 @@ if (window.DetailView == null) {
 
         BOUNDPROP: "bound-prop",
 
+        regAppearance: function(name, appearance, baseName) {
+            if (baseName) {
+                var baseAppearance = this._appearances[baseName];
+                if (baseAppearance) {
+                    appearance = Object.assign(
+                        JSON.parse( JSON.stringify(baseAppearance) ),
+                        appearance
+                    );
+                }
+            }
+            this._appearances[name] = appearance;
+        },
+
         /**
          *
          * 数据渲染方法，无返回值。若重复调用此函数，则重新渲染整个区域
