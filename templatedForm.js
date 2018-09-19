@@ -112,6 +112,19 @@ if (GLOBAL.TemplatedForm == null)(function() {
             element.className = val;
     };
 
+    TemplatedForm.deepAssign = function(dst, src) {
+        for (var k in src) {
+            if (dst[k] != null && typeof dst[k] == "object" &&
+                src[k] != null && typeof src[k] == "object")
+            {
+                this.deepAssign(dst[k], src[k]);
+                continue;
+            }
+            dst[k] = src[k];
+        }
+        return dst;
+    };
+
     TemplatedForm.obj2array = function(obj) {
         return Array.isArray(obj)? obj: [obj];
     };

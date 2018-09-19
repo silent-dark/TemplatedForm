@@ -18,7 +18,7 @@ if (window.DetailView == null) {
             if (baseName) {
                 var baseAppearance = this._appearances[baseName];
                 if (baseAppearance) {
-                    appearance = Object.assign(
+                    appearance = TemplatedForm.deepAssign(
                         JSON.parse( JSON.stringify(baseAppearance) ),
                         appearance
                     );
