@@ -14,15 +14,20 @@ if (window.DetailView == null) {
 
         BOUNDPROP: "bound-prop",
 
-        regAppearance: function(name, appearance, baseName) {
-            if (baseName) {
-                var baseAppearance = this._appearances[baseName];
+        regAppearance: function(name, appearance) {
+            if (!name || !appearance)
+                throw new TypeError("invalid appearance: " + name);
+
+            if ( name.indexOf("::") > 0 ) {
+                name = name.split("::");
+                var baseAppearance = this._appearances[ name[1] ];
                 if (baseAppearance) {
                     appearance = TemplatedForm.deepAssign(
                         JSON.parse( JSON.stringify(baseAppearance) ),
                         appearance
                     );
                 }
+                name = appearance.name = name[0];
             }
             this._appearances[name] = appearance;
         },
