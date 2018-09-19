@@ -114,9 +114,9 @@ if (GLOBAL.TemplatedForm == null)(function() {
 
     TemplatedForm.deepAssign = function(dst, src) {
         for (var k in src) {
-            if (dst[k] != null && typeof dst[k] == "object" &&
-                src[k] != null && typeof src[k] == "object")
-            {
+            if (src[k] != null && typeof src[k] == "object") {
+                if (dst[k] == null || typeof dst[k] != "object")
+                    dst[k] = {};
                 this.deepAssign(dst[k], src[k]);
                 continue;
             }
