@@ -60,12 +60,18 @@ if (window.TableView == null) {
         },
 
         remove: function(container, appearanceIdx, rowFilter) {
+            var delTarget = null;
+            var delRows = [];
             this._query(
                 container, appearanceIdx, rowFilter,
                 function(rowData, domRow, domSec) {
-                    domSec.deleteRow(domRow.sectionRowIndex);
+                    delTarget = domSec;
+                    delRows.push(domRow.sectionRowIndex - delRows.length);
                 }
             );
+            delRows.map(function(rowIdx) {
+                delTarget.deleteRow(rowIdx);
+            });
         },
 
         update: function(container, appearanceIdx, rowFilter, dataObj) {
