@@ -147,11 +147,14 @@ if (window.DetailView == null) {
             }
 
             var dataValue = TemplatedForm.refProp(dataObj, filter.propName);
-            if (dataValue == null) {
-                if (!filter.injectable)
+            if (filter.injectable) {
+                if (dataValue == null) {
+                    TemplatedForm.refProp(dataObj, filter.propName, "");
+                    dataValue = "";
+                }
+            } else {
+                if ( dataValue == null || TemplatedForm.isEmpty(dataValue) )
                     return null;
-                TemplatedForm.refProp(dataObj, filter.propName, "");
-                dataValue = "";
             }
 
             if (dataElement.disabled != null)

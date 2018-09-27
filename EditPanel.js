@@ -31,7 +31,7 @@ if (window.EditPanel == null) {
                     }
                     if (btn.onclick) {
                         btn.domBtn.onclick = function() {
-                            btn.onclick.call(this, i, arguments);
+                            btn.onclick.call(this, i);
                         };
                     }
                     container.appendChild(btn.domBtn);

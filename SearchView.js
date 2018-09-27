@@ -35,10 +35,19 @@ if (window.SearchView == null) {
                 self.searchArgs = searchData;
 
                 if (searchData.modelName) {
-                    self._searchFor(searchData.modelName, searchData);
+                    self.onSearch(searchData.modelName, {
+                        pageSize: self.pageSize? self.pageSize: 0,
+                        page: searchData.pageIdx,
+                        cond: self._condFor(searchData.modelName, searchData)
+                    });
                 } else if (self._condOptions.searchFieldNames) {
-                    for (var k in self._condOptions.searchFieldNames)
-                        self._searchFor(k, searchData);
+                    for (var k in self._condOptions.searchFieldNames) {
+                        self.onSearch(k, {
+                            pageSize: self.pageSize? self.pageSize: 0,
+                            page: searchData.pageIdx,
+                            cond: self._condFor(k, searchData)
+                        });
+                    }
                 } else {
                     throw new TypeError("unknown modelName");
                 }
@@ -119,18 +128,6 @@ if (window.SearchView == null) {
 
             this.innerSearchPanel.render(
                 this.domComponents[0], searchCond.dvFilters, searchCond.dvData
-            );
-        },
-
-        _searchFor: function(modelName, searchData) {
-            this.onSearch(
-                modelName,
-                Object.assign({
-                    pageSize: this.pageSize? this.pageSize: 0,
-                    page: searchData.pageIdx
-                }, {
-                    cond: this._condFor(modelName, searchData)
-                })
             );
         },
 
