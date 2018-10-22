@@ -26,8 +26,9 @@ NavTree.prototype.setData = function (data) {
   var that = this;
 
   that.data = TemplatedForm.obj2array(data);
+  that.$container.empty();
 
-  var $searchArea = $('<h3 class="h3-title"></h3>');
+  /*var $searchArea = $('<h3 class="h3-title"></h3>');
   var $searchBar  = $('<div class="search-item search-cond search-border"></div>');
   var $searchEdit = $('<input type="search" class="search-item search-edit">');
   var $searchBtn  = $('<a href="#" class="search-noborder search-btn">搜索</a>');
@@ -36,14 +37,13 @@ NavTree.prototype.setData = function (data) {
     $searchEdit[0].value = "";
   })
 
-  that.$container.empty();
   $searchBar.append(
     $('<span class="fa fa-search contact-label"> </span>')
   );
   $searchBar.append($searchEdit);
   $searchArea.append($searchBar);
   $searchArea.append($searchBtn);
-  that.$container.append($searchArea);
+  that.$container.append($searchArea);*/
 
   that.addDom();
   that.init_event();
@@ -73,7 +73,7 @@ NavTree.prototype.forJson = function (data,isHidden,left) {
     $header.attr('data_toggle',isHidden).css('paddingLeft',left);
 
     data.children.map(function(item,idx){
-      $list.append(that.forJson(item,true,left + 20));
+      $list.append(that.forJson(item,false,left + 20));
     })
     return $list;
   }else{
@@ -102,17 +102,15 @@ NavTree.prototype.init_event = function () {
         $child = $list.children('.nt-list'),
         toggle = $this.data('toggle');
 
-    if(!!that.isCloseOther){
+    if(!!$this.find('.nt-rightIcon').hasClass('toButtom')){
+      that.hiddenList($this,$child);
+    }else{
       that.showList($this,$child);
+    }
 
+    if(!!that.isCloseOther){
       var $siblings = $this.closest('.nt-list').siblings();
       that.hiddenList($siblings.find('.nt-header'),$siblings.find('.nt-list'));
-    }else{
-      if(!!$this.find('.nt-rightIcon').hasClass('toButtom')){
-        that.hiddenList($this,$child);
-      }else{
-        that.showList($this,$child);
-      }
     }
   })
 };
@@ -136,7 +134,7 @@ NavTree.prototype.createHeader = function (title,icon,hasIcon,hasAngle) {
   var $header     = $('<div class="nt-header" style="padding-left:0px;"></span>'),
       $icon       = $('<i class="nt-icon '+ (!!hasIcon ? icon : '') +'"></i>'),
       $title      = $('<span class="nt-title">'+ title +'</span>'),
-      $rightIcon  = $('<i class="nt-rightIcon '+ (!!hasAngle ? 'fa fa-angle-right' : '') +'"></i>');
+      $rightIcon  = $('<i class="nt-rightIcon '+ (!!hasAngle ? 'fa fa-angle-right toButtom' : '') +'"></i>');
 
       $header.append($icon);
       $header.append($title);

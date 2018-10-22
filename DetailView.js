@@ -99,8 +99,12 @@ if (window.DetailView == null) {
                     itemElement, appearance.styleOrClass
                 );
             }
-            if (filter.display)
-                itemElement.style.display = filter.display;
+            if (filter.display) {
+                if (filter.display.call)
+                    itemElement.style.display = filter.display(itemElement);
+                else
+                    itemElement.style.display = filter.display;
+            }
 
             // 构建label元素
             if (filter.label) {
