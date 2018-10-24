@@ -8,13 +8,11 @@
 var NavTree = function () {}
 
 NavTree.prototype.init = function($dom, hasTouchEffect, touchClass, isCloseOther) {
-  var that = this;
-  
   //参数
-  that.$container     = $($dom);
-  that.hasTouchEffect = hasTouchEffect;
-  that.touchClass     = touchClass;
-  that.isCloseOther   = isCloseOther;
+  this.$container     = $($dom);
+  this.hasTouchEffect = hasTouchEffect;
+  this.touchClass     = touchClass;
+  this.isCloseOther   = isCloseOther;
 };
 
 /**********************************方法************************************/
@@ -22,16 +20,17 @@ NavTree.prototype.init = function($dom, hasTouchEffect, touchClass, isCloseOther
 * 文档要求渲染方法
 * @param    data    JSON    组件外获取到的JSON对象数组
 */
-NavTree.prototype.setData = function (data) {
-  var that = this;
-
-  that.data = TemplatedForm.obj2array(data);
-  that.$container.empty();
+NavTree.prototype.setData = function (data, focus) {
+  this.data = TemplatedForm.obj2array(data);
+  this.$container.off('click');
+  this.$container.empty();
+  this.headMap = {};
 
   /*var $searchArea = $('<h3 class="h3-title"></h3>');
   var $searchBar  = $('<div class="search-item search-cond search-border"></div>');
   var $searchEdit = $('<input type="search" class="search-item search-edit">');
   var $searchBtn  = $('<a href="#" class="search-noborder search-btn">搜索</a>');
+
   $searchBtn.on('click', function() {
     dbClient.msgDriver.triggerLocalMsg("NavTree", "Search", $searchEdit[0].value);
     $searchEdit[0].value = "";
@@ -43,44 +42,67 @@ NavTree.prototype.setData = function (data) {
   $searchBar.append($searchEdit);
   $searchArea.append($searchBar);
   $searchArea.append($searchBtn);
-  that.$container.append($searchArea);*/
+  this.$container.append($searchArea);*/
 
-  that.addDom();
-  that.init_event();
+  this.addDom();
+  this.init_event();
+
+  if (focus)
+    this.expand(focus);
 };
+
+NavTree.prototype.expand = function(focus) {
+  var clickStack = [];
+  for( var k = focus; k.length > 1; k = TemplatedForm.parentPath(k) ) {
+    var target = this.headMap[k];
+    if (target)
+      clickStack.push(target);
+    else
+      break;
+  }
+
+  var i = clickStack.length;
+  while (i > 0)
+    clickStack[--i].click();
+
+  if (clickStack.length > 0) {
+    this.$container.scrollTop(
+        this.$container.scrollTop() + clickStack[0].offset().top - 80
+    );
+  }
+};
+
 //数据递归                                 ***核心函数***
 NavTree.prototype.forJson = function (data,isHidden,left) {
   var that = this,
-      $header = that.createHeader(
-                                    data.menuNam,
-                                    data.iconClassName,
-                                    data.hasIcon,
-                                    data.hasAngle),
-      $list = that.createList(data.id,isHidden);
+      $header = this.createHeader(data.menuNam,
+                                  data.iconClassName,
+                                  data.hasIcon,
+                                  data.hasAngle),
+      $list = this.createList(data.id,isHidden);
 
+  $header.on('click',function(){
+    if(!!that.hasTouchEffect){
+      that.$container.find('.'+ that.touchClass).removeClass(that.touchClass);
+      $(this).addClass(that.touchClass);
+    }
+    data.onclick($list.attr('uri'))
+  })
   $list.append($header);
-
-    $header.on('click',function(){
-      if(!!that.hasTouchEffect){
-        that.$container.find('.'+ that.touchClass).removeClass(that.touchClass);
-        $(this).addClass(that.touchClass);
-      }
-
-      data.onclick($list.data('id'))
-    })
+  that.headMap[data.id] = $header;
 
   if(data.children instanceof Array){
-    $header.attr('data_toggle',isHidden).css('paddingLeft',left);
+    $header.attr('toggle',isHidden).css('paddingLeft',left);
 
     data.children.map(function(item,idx){
-      $list.append(that.forJson(item,false,left + 20));
+      $list.append(that.forJson(item,true,left + 20));
     })
-    return $list;
   }else{
-    $header.attr('data_toggle',isHidden).css('paddingLeft',left);
+    $header.attr('toggle',isHidden).css('paddingLeft',left);
     $header.children('.nt-rightIcon').remove();
-    return $list;
   }
+
+  return $list;
 }
 
 /*******************************插入dom********************************/
@@ -100,7 +122,7 @@ NavTree.prototype.init_event = function () {
     var $this  = $(this),
         $list  = $this.closest('.nt-list'),
         $child = $list.children('.nt-list'),
-        toggle = $this.data('toggle');
+        toggle = $this.attr('toggle');
 
     if(!!$this.find('.nt-rightIcon').hasClass('toButtom')){
       that.hiddenList($this,$child);
@@ -115,16 +137,15 @@ NavTree.prototype.init_event = function () {
   })
 };
 NavTree.prototype.hiddenList = function ($this,$child) {
-  $this.attr('data-toggle','false');
+  $this.attr('toggle','false');
   $this.find('.nt-rightIcon').removeClass('toButtom');
   !!$child ? $child.addClass('hidden') : $($child).addClass('hidden');
 };
 NavTree.prototype.showList = function ($this,$child) {
-  $this.attr('data-toggle','true');
+  $this.attr('toggle','true');
   $this.find('.nt-rightIcon').addClass('toButtom');
   $child.removeClass('hidden');
 };
-
 
 /************************************dom模板**************************************/
 /*
@@ -134,7 +155,7 @@ NavTree.prototype.createHeader = function (title,icon,hasIcon,hasAngle) {
   var $header     = $('<div class="nt-header" style="padding-left:0px;"></span>'),
       $icon       = $('<i class="nt-icon '+ (!!hasIcon ? icon : '') +'"></i>'),
       $title      = $('<span class="nt-title">'+ title +'</span>'),
-      $rightIcon  = $('<i class="nt-rightIcon '+ (!!hasAngle ? 'fa fa-angle-right toButtom' : '') +'"></i>');
+      $rightIcon  = $('<i class="nt-rightIcon '+ (!!hasAngle ? 'fa fa-angle-right' : '') +'"></i>');
 
       $header.append($icon);
       $header.append($title);
@@ -143,8 +164,8 @@ NavTree.prototype.createHeader = function (title,icon,hasIcon,hasAngle) {
   return $header;
 };
 NavTree.prototype.createList = function (id,isHidden) {
-  var $list = $('<div class="nt-list" data-id="'+ id +'"></div>');
+  var $list = $('<div class="nt-list" uri="'+ id +'"></div>');
   !!isHidden && $list.addClass('hidden');
-  
+
   return $list;
 };

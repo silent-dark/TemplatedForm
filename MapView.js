@@ -50,12 +50,14 @@ MapView.prototype.attach = function(container, bgImg, iconImg){
     that.$scope.addClass('mv-scope');
     that.$scope.append(that.$header);
     that.$scope.append(that.$container);
+    that.icon = iconImg;
+
     that.$container.css({
         background: 'url('+ bgImg +') no-repeat 0px 0px',
         backgroundSize: '100% 100%'
     });
-
-    that.icon = iconImg;
+    if (that.$container)
+        that.$container.off('click');
     that.$container.on('click',function(event){
         if($(event.target).hasClass('mv-container')){
             that._mapMarkClick();

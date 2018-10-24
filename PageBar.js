@@ -38,6 +38,8 @@ var PageBar = function (appearances) {
 
 PageBar.prototype.render = function ($top,totalPages,showPages,onGoPage) {
     $top.innerHTML = "";
+    if (this.$container)
+        this.$container.off('click');
     this.$container = $($top);
     this.totalPages = totalPages;
     this.showPages = showPages;
